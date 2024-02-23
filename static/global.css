@@ -1,0 +1,106 @@
+:root {
+	--color-a: oklch(37% 0.026 156);
+	--color-e: oklch(45% 0.012 145);
+	--color-i: oklch(51% 0.018 202);
+	--color-o: oklch(80% 0.038 106); /* Has contrast on a */
+	--color-u: oklch(97% 0.021 118); /* Has contrast on a, e, i */
+}
+
+*, *::before, *::after {
+	box-sizing: border-box;
+	margin: 0;
+}
+
+html {
+	background: var(--color-a);
+}
+
+body {
+	font-family: "Crimson Text", serif;
+	font-size: clamp(1rem, 2vw, 1.333rem);
+	color: var(--color-u);
+}
+
+h1 { font-size: 3em; }
+h2 { font-size: 2em; }
+p { line-height: 1.15; }
+
+button {
+	font-size: 1em;
+	border: 0.25em solid var(--color-o);
+	padding: 0.375em 1em;
+	background: transparent;
+	color: var(--color-u);
+	font-family: inherit;
+	position: relative;
+	cursor: pointer;
+	transition: border-color 0.25s ease-in-out;
+
+	&::before, &::after {
+		content: "";
+		position: absolute;
+		width: 66%;
+		height: 0.125em;
+		background: var(--color-o);
+		pointer-events: none;
+		transition: all 0.25s ease-in-out;
+	}
+
+	&::before {
+		inset-block-start: 0.125em;
+		inset-inline-end: 0.25em;
+	}
+
+	&::after {
+		inset-block-end: 0.125em;
+		inset-inline-start: 0.25em;
+	}
+
+	:is(&:hover, &:focus):not(:disabled) {
+		border-color: var(--color-u);
+
+		&::before {
+			width: 0%;
+			inset-inline-end: 0em;
+			background: var(--color-u);
+		}
+	
+		&::after {
+			width: 0%;
+			inset-inline-start: 0em;
+			background: var(--color-u);
+		}
+	}
+
+	&:active:not(:disabled) {
+		transition-duration: 0s;
+		border-color: var(--color-o);
+		color: var(--color-o);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&, &::before, &::after {
+			transition-duration: 0s;
+		}
+	}
+}
+
+:is(button, input):focus-within {
+	outline: 0.125em dotted var(--color-o);
+	outline-offset: 0.125em;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--color-a: oklch(97% 0.021 118);
+		--color-e: oklch(80% 0.038 106);
+		--color-i: oklch(51% 0.018 202);
+		--color-o: oklch(45% 0.012 145);
+		--color-u: oklch(37% 0.026 156);
+	}
+}
