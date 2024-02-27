@@ -7,6 +7,12 @@ export type Prompt = {
 	readonly letters: number
 }
 
+export type WordId = string
+export type Word = {
+	readonly id: WordId
+	readonly text: string
+}
+
 export function isSameDay(a: Date, b: Date) {
 	return a.getUTCFullYear() === b.getUTCFullYear()
 		&& a.getUTCMonth() === b.getUTCMonth()

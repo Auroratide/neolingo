@@ -1,4 +1,4 @@
-import type { Prompt, UserId } from "./domain"
+import type { Prompt, UserId, Word, WordId } from "./domain"
 
 async function simulateLatency(sec: number = 0.8) {
 	return new Promise(resolve => {
@@ -30,4 +30,21 @@ export async function submitWord(myId: UserId, myWord: string): Promise<void> {
 	await simulateLatency()
 
 	alert(`You (${myId}) submitted: ${myWord}`)
+}
+
+export async function getWordsToVoteFor(): Promise<readonly Word[]> {
+	await simulateLatency()
+
+	return [
+		{ id: fakeId(), text: "nihike" },
+		{ id: fakeId(), text: "dawalk" },
+		{ id: fakeId(), text: "wailke" },
+		{ id: fakeId(), text: "plumor" },
+	]
+}
+
+export async function submitVote(myId: UserId, myVote: WordId): Promise<void> {
+	await simulateLatency()
+
+	alert(`You (${myId}) voted: ${myVote}`)
 }

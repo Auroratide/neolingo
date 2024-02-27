@@ -19,6 +19,7 @@
 		padding: 1.5em 0.75em;
 		border: 0.25em solid var(--color-i);
 		transition: border-color 0.25s ease-in-out;
+		width: 100%;
 
 		&::before, &::after {
 			content: "";

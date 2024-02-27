@@ -23,6 +23,7 @@
 		gap: 0.25em;
 		padding: 0.75em;
 		background: var(--color-e);
+		border: 0.25em solid var(--color-i);
 	}
 
 	.line {
