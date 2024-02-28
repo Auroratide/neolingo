@@ -1,4 +1,4 @@
 root = true
 
-[*.{js,cjs,ts,html,css,json,svelte}]
+[*.{js,cjs,ts,html,css,json,svelte,sql}]
 indent_style = tab

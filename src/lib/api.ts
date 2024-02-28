@@ -1,4 +1,8 @@
 import type { Prompt, UserId, Word, WordId } from "./domain"
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "$env/static/public"
+import { createClient } from "@supabase/supabase-js"
+
+const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY)
 
 async function simulateLatency(sec: number = 0.8) {
 	return new Promise(resolve => {
@@ -17,13 +21,15 @@ export async function generateUserId(): Promise<UserId> {
 }
 
 export async function getPromptForToday(): Promise<Prompt> {
-	await simulateLatency()
+	return await supabase.rpc("get_prompt_for_today")
+		.maybeSingle<PromptRow>()
+		.then(({ data, error }) => {
+			if (error != null || data == null) {
+				throw new ApiError("Failed to get prompt", error)
+			}
 
-	return {
-		id: fakeId(),
-		text: "a hike or journey taken during the transition from night to dawn",
-		letters: 6,
-	}
+			return rowToPrompt(data)
+		})
 }
 
 export async function submitWord(myId: UserId, myWord: string): Promise<void> {
@@ -47,4 +53,24 @@ export async function submitVote(myId: UserId, myVote: WordId): Promise<void> {
 	await simulateLatency()
 
 	alert(`You (${myId}) voted: ${myVote}`)
+}
+
+class ApiError extends Error {
+	constructor(message: string, readonly cause?: unknown) {
+		super(message)
+	}
+}
+
+type PromptRow = {
+	id: number
+	day: string
+	text: string
+	letters: number
+}
+function rowToPrompt(row: PromptRow): Prompt {
+	return {
+		id: row.id.toString(),
+		text: row.text,
+		letters: row.letters,
+	}
 }
