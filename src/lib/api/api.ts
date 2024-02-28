@@ -1,6 +1,7 @@
-import type { Prompt, MyId, Word, WordId } from "./domain"
+import type { Prompt, MyId, Word, WordId } from "../domain"
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "$env/static/public"
 import { createClient } from "@supabase/supabase-js"
+import { type PromptRow, rowToPrompt } from "./schema"
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY)
 
@@ -64,19 +65,5 @@ export async function submitVote(myId: MyId, myVote: WordId): Promise<void> {
 class ApiError extends Error {
 	constructor(message: string, readonly cause?: unknown) {
 		super(message)
-	}
-}
-
-type PromptRow = {
-	id: number
-	day: string
-	text: string
-	letters: number
-}
-function rowToPrompt(row: PromptRow): Prompt {
-	return {
-		id: row.id.toString(),
-		text: row.text,
-		letters: row.letters,
 	}
 }
