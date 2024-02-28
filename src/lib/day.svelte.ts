@@ -11,7 +11,7 @@ $effect.root(() => {
 	const reset = () => {
 		day = new Date()
 
-		timeout = setTimeout(reset, msUntilNextDay(day) + 500)
+		timeout = window.setTimeout(reset, msUntilNextDay(day) + 500)
 	}
 
 	reset()
