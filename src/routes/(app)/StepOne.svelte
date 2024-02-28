@@ -26,7 +26,12 @@
 			<Stack>
 				<p>Invent a word that means:</p>
 				<p class="balanced"><strong class="slightly-larger quoted">{content?.text ?? "this is placeholder text where the prompt text will go after it all loads into place"}</strong></p>
-				<LetterByLetterInput id="word-input" letters={content?.letters ?? 1} label="Your word" bind:value={currentWord} />
+				<LetterByLetterInput
+					id="word-input"
+					letters={content?.letters == null ? 1 : content.letters}
+					label="Your word"
+					bind:value={currentWord}
+				/>
 				<button type="submit" class="slightly-larger" disabled={currentWord.length !== content?.letters}>Submit Word</button>
 			</Stack>
 		</form>

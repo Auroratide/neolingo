@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Prompt, Word } from "$lib/domain"
+	import type { Word } from "$lib/domain"
 	import FocusCard from "$lib/FocusCard.svelte"
 	import WordVoter from "$lib/WordVoter.svelte"
 	import Spinner from "$lib/Spinner.svelte"

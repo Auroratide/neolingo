@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Stack from "$lib/Stack.svelte";
+	import Stack from "$lib/Stack.svelte"
 	import StepOne from "./StepOne.svelte"
 	import StepTwo from "./StepTwo.svelte"
 </script>
