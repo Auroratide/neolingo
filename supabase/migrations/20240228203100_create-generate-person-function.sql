@@ -1,0 +1,8 @@
+CREATE OR REPLACE FUNCTION generate_new_person()
+RETURNS uuid AS $$ 
+DECLARE
+	new_uuid uuid;
+BEGIN
+	INSERT INTO private.people DEFAULT VALUES RETURNING id INTO new_uuid;
+	RETURN new_uuid;
+END $$ LANGUAGE PLPGSQL VOLATILE SECURITY DEFINER;

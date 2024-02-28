@@ -1,4 +1,4 @@
-import type { Prompt, UserId, Word, WordId } from "./domain"
+import type { Prompt, MyId, Word, WordId } from "./domain"
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "$env/static/public"
 import { createClient } from "@supabase/supabase-js"
 
@@ -14,10 +14,16 @@ function fakeId() {
 	return "fake." + Math.random().toString(36).substring(2)
 }
 
-export async function generateUserId(): Promise<UserId> {
-	await simulateLatency()
-	
-	return fakeId()
+export async function generateMyId(): Promise<MyId> {
+	return await supabase.rpc("generate_new_person")
+		.maybeSingle<string>()
+		.then(({ data, error }) => {
+			if (error != null || data == null) {
+				throw new ApiError("Failed to generate new person", error)
+			}
+
+			return data
+		})
 }
 
 export async function getPromptForToday(): Promise<Prompt> {
@@ -32,7 +38,7 @@ export async function getPromptForToday(): Promise<Prompt> {
 		})
 }
 
-export async function submitWord(myId: UserId, myWord: string): Promise<void> {
+export async function submitWord(myId: MyId, myWord: string): Promise<void> {
 	await simulateLatency()
 
 	alert(`You (${myId}) submitted: ${myWord}`)
@@ -49,7 +55,7 @@ export async function getWordsToVoteFor(): Promise<readonly Word[]> {
 	]
 }
 
-export async function submitVote(myId: UserId, myVote: WordId): Promise<void> {
+export async function submitVote(myId: MyId, myVote: WordId): Promise<void> {
 	await simulateLatency()
 
 	alert(`You (${myId}) voted: ${myVote}`)

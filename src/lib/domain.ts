@@ -1,4 +1,4 @@
-export type UserId = string
+export type MyId = string
 
 export type PromptId = string
 export type Prompt = {
