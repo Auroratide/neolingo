@@ -4,6 +4,7 @@
 	--color-i: oklch(51% 0.018 202);
 	--color-o: oklch(80% 0.038 106); /* Has contrast on a */
 	--color-u: oklch(97% 0.021 118); /* Has contrast on a, e, i */
+	--color-y: oklch(39% 0.11 39);
 }
 
 *, *::before, *::after {
