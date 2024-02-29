@@ -1,7 +1,8 @@
-import type { Prompt, MyId, Word, WordId } from "../domain"
+import type { Prompt, MyId, Word, WordId, PromptId } from "../domain"
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "$env/static/public"
 import { createClient } from "@supabase/supabase-js"
 import { type PromptRow, rowToPrompt } from "./schema"
+import { raiseError } from "./errors"
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY)
 
@@ -20,7 +21,7 @@ export async function generateMyId(): Promise<MyId> {
 		.maybeSingle<string>()
 		.then(({ data, error }) => {
 			if (error != null || data == null) {
-				throw new ApiError("Failed to generate new person", error)
+				raiseError(error, "Failed to generate new person.")
 			}
 
 			return data
@@ -32,17 +33,19 @@ export async function getPromptForToday(): Promise<Prompt> {
 		.maybeSingle<PromptRow>()
 		.then(({ data, error }) => {
 			if (error != null || data == null) {
-				throw new ApiError("Failed to get prompt", error)
+				raiseError(error, "Failed to get prompt.")
 			}
 
 			return rowToPrompt(data)
 		})
 }
 
-export async function submitWord(myId: MyId, myWord: string): Promise<void> {
-	await simulateLatency()
-
-	alert(`You (${myId}) submitted: ${myWord}`)
+export async function submitWord(myId: MyId, promptId: PromptId, myWord: string): Promise<void> {
+	await supabase.rpc("submit_word", { _my_id: myId, _prompt_id: promptId, _word: myWord }).then(({ error }) => {
+		if (error != null) {
+			raiseError(error, "Failed to submit word")
+		}
+	})
 }
 
 export async function getWordsToVoteFor(): Promise<readonly Word[]> {
@@ -60,10 +63,4 @@ export async function submitVote(myId: MyId, myVote: WordId): Promise<void> {
 	await simulateLatency()
 
 	alert(`You (${myId}) voted: ${myVote}`)
-}
-
-class ApiError extends Error {
-	constructor(message: string, readonly cause?: unknown) {
-		super(message)
-	}
 }

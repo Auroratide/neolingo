@@ -41,7 +41,7 @@ export default {
 	get content() { return prompt },
 	get myWord() { return myWord },
 	submitWord: async (word: string) => {
-		await Api.submitWord(await me.id, word)
+		await Api.submitWord(await me.id, (await prompt).id, word)
 		localStorage.setItem(WORD, word)
 	},
 } satisfies PromptRune
