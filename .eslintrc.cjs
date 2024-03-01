@@ -15,6 +15,7 @@ module.exports = {
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"svelte/no-at-html-tags": "off",
 		"no-console": ["error"],
+		"no-undef": ["off"], // false positive with svelte generics; rely on typescript instead
 	},
 	parserOptions: {
 		sourceType: "module",
