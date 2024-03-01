@@ -3,12 +3,16 @@
 
 	type Props = {
 		focus?: boolean
+		error?: boolean
 		children: Snippet
-	}
-	const { focus = false, children } = $props<Props>()
+	}; const {
+		focus = false,
+		error = false,
+		children,
+	} = $props<Props>()
 </script>
 
-<section class="focus-card" class:focus>
+<section class="focus-card" class:focus class:error>
 	{@render children()}
 </section>
 
@@ -58,6 +62,14 @@
 			&, &::before, &::after {
 				transition: none;
 			}
+		}
+	}
+
+	.error {
+		border-color: var(--color-y);
+
+		&::before, &::after {
+			background: var(--color-y);
 		}
 	}
 </style>

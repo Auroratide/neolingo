@@ -1,5 +1,7 @@
+export type NotificationId = string
+
 type BaseNotification<Type extends string, Content> = {
-	readonly id: string
+	readonly id: NotificationId
 	readonly title: string
 	readonly type: Type
 	readonly content: Content
@@ -17,15 +19,15 @@ export type Notification = NormieNotification | ErrorNotification
 
 export type NotificationsRune = {
 	readonly list: readonly Notification[]
-	normie: (title: string, message: string) => void
-	error: (error: Error) => void
+	normie: (title: string, message: string) => NotificationId
+	error: (error: Error) => NotificationId
 }
 
 let notifications = $state<Notification[]>([])
 
 const uniqueId = () => Math.random().toString(36).slice(2)
 
-const normie = (title: string, message: string): void => {
+const normie = (title: string, message: string): NotificationId => {
 	const id = uniqueId()
 	const dismiss = () => {
 		notifications = notifications.filter((e) => e.id !== id)
@@ -39,9 +41,10 @@ const normie = (title: string, message: string): void => {
 		dismiss,
 	}]
 
+	return id
 }
 
-const error = (e: Error): void => {
+const error = (e: Error): NotificationId => {
 	const id = uniqueId()
 	const dismiss = () => {
 		notifications = notifications.filter((e) => e.id !== id)
@@ -54,6 +57,8 @@ const error = (e: Error): void => {
 		content: e,
 		dismiss,
 	}]
+
+	return id
 }
 
 export default {

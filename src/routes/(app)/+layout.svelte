@@ -2,6 +2,7 @@
 	import type { Snippet } from "svelte"
 	import Container from "$lib/Container.svelte"
 	import Stack from "$lib/Stack.svelte"
+	import Notifier from "$lib/notifications/Notifier.svelte"
 
 	type Props = { children: Snippet }
 	const { children } = $props<Props>()
@@ -20,6 +21,7 @@
 		</footer>
 	</Stack>
 </Container>
+<Notifier />
 
 <style>
 	main { width: 100%; }

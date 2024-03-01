@@ -91,6 +91,6 @@
 
 	.error {
 		--bg: var(--color-y);
-		--border: var(--color-e);
+		--border: var(--color-o);
 	}
 </style>
