@@ -1,6 +1,7 @@
 import { describe, expect, test, beforeAll, afterAll, beforeEach } from "vitest"
 import { Client } from "pg"
 import * as Api from "."
+import type { Word } from "$lib/domain"
 
 describe("api", () => {
 	const { VITE_LOCAL_PG_URL } = import.meta.env
@@ -13,6 +14,10 @@ describe("api", () => {
 
 	afterAll(async () => {
 		await pg.end()
+	})
+
+	beforeEach(async () => {
+		await clearDb(pg)
 	})
 
 	test("generateMyId", async () => {
@@ -192,7 +197,213 @@ describe("api", () => {
 			const promise = Api.submitWord(myId, promptId, myWord)
 
 			// then
-			await expect(promise).rejects.toThrow(/word was submitted for a prompt other than today's prompt/)
+			await expect(promise).rejects.toThrow(/word was submitted for a prompt other than today's prompt/i)
+		})
+	})
+
+	describe("voting", () => {
+		let promptId: string
+		let alice: string
+		let marisa: string
+		let aya: string
+
+		beforeEach(async () => {
+			const now = new Date()
+			const today = now.toISOString().split("T")[0]
+			const todayText = "PROMPT FROM TEST TODAY"
+			const todayLetters = 5
+
+			await pg.query(`
+				INSERT INTO private.prompts
+					(day, text, letters)
+				VALUES
+					($1, $2, $3)
+				ON CONFLICT (day)
+				DO UPDATE SET text = EXCLUDED.text, letters = EXCLUDED.letters
+			`, [today, todayText, todayLetters])
+
+			promptId = await pg.query(`
+				SELECT id FROM private.prompts WHERE day = $1;
+			`, [today]).then(result => result.rows[0].id)
+
+			;[alice, marisa, aya] = await Promise.all([Api.generateMyId(), Api.generateMyId(), Api.generateMyId()])
+		})
+		
+		test("no words exist for the prompt yet", async () => {
+			const result = await Api.getVotableWords()
+
+			expect(result).toEqual([])
+		})
+
+		test("a few words have been submitted, but no votes yet", async () => {
+			// given
+			await Api.submitWord(alice, promptId, "dolls")
+			await Api.submitWord(marisa, promptId, "laser")
+			await Api.submitWord(aya, promptId, "tengu")
+
+			// when
+			const result = await Api.getVotableWords()
+
+			// then
+			expect(result).toEqual(expect.arrayContaining([
+				expect.objectContaining({ text: "dolls" }),
+				expect.objectContaining({ text: "laser" }),
+				expect.objectContaining({ text: "tengu" }),
+			]))
+		})
+
+		test("two people submit the same word", async () => {
+			// given
+			await Api.submitWord(alice, promptId, "cards")
+			await Api.submitWord(marisa, promptId, "cards")
+
+			// when
+			const result = await Api.getVotableWords()
+
+			// then
+			expect(result).toEqual(expect.arrayContaining([
+				expect.objectContaining({ text: "cards" }),
+			]))
+		})
+
+		test("votes on words are tallied", async () => {
+			// given
+			await Api.submitWord(alice, promptId, "dolls")
+			await Api.submitWord(marisa, promptId, "laser")
+			await Api.submitWord(aya, promptId, "tengu")
+
+			const [dolls, laser] = await Api.getVotableWords()
+
+			// when
+			await Api.submitVote(alice, promptId, laser.id)
+			await Api.submitVote(marisa, promptId, dolls.id)
+			await Api.submitVote(aya, promptId, laser.id)
+
+			// then
+			const tallied = await Api.getVotableWords()
+
+			expect(tallied).toEqual(expect.arrayContaining([
+				expect.objectContaining({ text: "laser", tally: 2 }),
+				expect.objectContaining({ text: "dolls", tally: 1 }),
+				expect.objectContaining({ text: "tengu", tally: 0 }),
+			]))
+		})
+
+		test("resubmitting a vote", async () => {
+			// given
+			await Api.submitWord(alice, promptId, "dolls")
+			await Api.submitWord(marisa, promptId, "laser")
+			await Api.submitWord(aya, promptId, "tengu")
+
+			const [dolls, laser] = await Api.getVotableWords()
+
+			await Api.submitVote(aya, promptId, laser.id)
+	
+			// when
+			await Api.submitVote(aya, promptId, dolls.id)
+
+			// then
+			const tallied = await Api.getVotableWords()
+
+			expect(tallied).toEqual(expect.arrayContaining([
+				expect.objectContaining({ text: "laser", tally: 0 }),
+				expect.objectContaining({ text: "dolls", tally: 1 }),
+				expect.objectContaining({ text: "tengu", tally: 0 }),
+			]))
+		})
+
+		describe("submitVote validation", () => {
+			let word: Word
+
+			beforeEach(async () => {
+				await Api.submitWord(alice, promptId, "dolls")
+				word = (await Api.getVotableWords())[0]
+			})
+
+			test("my id is not known", async () => {
+				// given
+				const missingId = "bc39e28b-0012-4c24-8a1e-233b5ff19c11"
+
+				// when
+				const promise = Api.submitVote(missingId, promptId, word.id)
+
+				// then
+				await expect(promise).rejects.toThrow(/failed to submit vote/i)
+			})
+
+			test("prompt id is not known", async () => {
+				// given
+				const missingPromptId = "-1"
+
+				// when
+				const promise = Api.submitVote(marisa, missingPromptId, word.id)
+
+				// then
+				await expect(promise).rejects.toThrow(/could not find prompt/i)
+			})
+
+			test("word id is not known", async () => {
+				// given
+				const missingWordId = "-1"
+
+				// when
+				const promise = Api.submitVote(marisa, promptId, missingWordId)
+
+				// then
+				await expect(promise).rejects.toThrow(/could not find word/i)
+			})
+
+			test("word id is for a different prompt", async () => {
+				// given
+				const todaysPromptId = promptId
+
+				const olderPromptId = await pg.query(`
+					INSERT INTO private.prompts (day, text, letters)
+					VALUES ('2024-02-20', 'older prompt', 6)
+					RETURNING id;
+				`).then(result => result.rows[0].id)
+
+				const olderWordId = await pg.query(`
+					INSERT INTO private.words (prompt_id, text) VALUES ($1, 'fakest') RETURNING id;
+				`, [olderPromptId]).then(result => result.rows[0].id)
+
+				// when
+				const promise = Api.submitVote(marisa, todaysPromptId, olderWordId)
+
+				// then
+				await expect(promise).rejects.toThrow(/voted word was for a different prompt/i)
+			})
+
+			test("prompt is no longer applicable for today", async () => {
+				// given
+				const olderPromptId = await pg.query(`
+					INSERT INTO private.prompts (day, text, letters)
+					VALUES ('2024-02-24', 'older prompt', 6)
+					RETURNING id;
+				`).then(result => result.rows[0].id)
+
+				const olderWordId = await pg.query(`
+					INSERT INTO private.words (prompt_id, text) VALUES ($1, 'fakest') RETURNING id;
+				`, [olderPromptId]).then(result => result.rows[0].id)
+
+				// when
+				const promise = Api.submitVote(marisa, olderPromptId, olderWordId)
+
+				// then
+				await expect(promise).rejects.toThrow(/voting period for this prompt has already passed/i)
+			})
 		})
 	})
 })
+
+function clearDb(pg: Client) {
+	return pg.query(`
+		TRUNCATE TABLE
+			private.people,
+			private.prompts,
+			private.submissions,
+			private.words,
+			private.votes
+		RESTART IDENTITY;
+	`)
+}

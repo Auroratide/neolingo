@@ -1,5 +1,6 @@
 import * as Api from "./api"
 import type { Word, WordId } from "./domain"
+import prompt from "./prompt.svelte"
 import day from "./day.svelte"
 import me from "./me.svelte"
 
@@ -22,7 +23,7 @@ $effect.root(() => {
 		const storedList = localStorage.getItem(CONTENT)
 
 		if (storedList == null || !day.isToday(lastGenerated)) {
-			words = Api.getWordsToVoteFor().then((newWords) => {
+			words = Api.getVotableWords().then((newWords) => {
 				localStorage.setItem(GENERATED, new Date().toISOString())
 				localStorage.setItem(CONTENT, JSON.stringify(newWords))
 				localStorage.removeItem(MY_VOTE)
@@ -40,8 +41,8 @@ $effect.root(() => {
 export default {
 	get list() { return words },
 	get myVote() { return myVote },
-	submitVote: async (voteId: WordId) => {
-		await Api.submitVote(await me.id, voteId)
-		localStorage.setItem(MY_VOTE, voteId)
+	submitVote: async (wordId: WordId) => {
+		await Api.submitVote(await me.id, (await prompt.content).id, wordId)
+		localStorage.setItem(MY_VOTE, wordId)
 	},
 } satisfies VotesRune

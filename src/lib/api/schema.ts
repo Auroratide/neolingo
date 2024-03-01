@@ -1,4 +1,4 @@
-import type { Prompt } from "$lib/domain"
+import type { Prompt, Word } from "$lib/domain"
 
 export type PromptRow = {
 	id: number
@@ -11,5 +11,18 @@ export function rowToPrompt(row: PromptRow): Prompt {
 		id: row.id.toString(),
 		text: row.text,
 		letters: row.letters,
+	}
+}
+
+export type WordRow = {
+	id: string
+	text: string
+	tally: number
+}
+export function rowToWord(row: WordRow): Word {
+	return {
+		id: row.id,
+		text: row.text,
+		tally: row.tally,
 	}
 }

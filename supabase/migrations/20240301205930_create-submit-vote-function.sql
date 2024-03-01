@@ -1,21 +1,21 @@
-CREATE OR REPLACE FUNCTION submit_word(
+CREATE OR REPLACE FUNCTION submit_vote(
 	_my_id uuid,
 	_prompt_id INT,
-	_word VARCHAR(255)
+	_word_id INT
 ) RETURNS INT AS $$ 
 DECLARE
 	ret_id INT;
 BEGIN
 	IF (SELECT day FROM private.prompts WHERE id = _prompt_id) != (SELECT CURRENT_DATE AT TIME ZONE 'UTC') THEN
-		RAISE EXCEPTION 'Word was submitted for a prompt other than today''s prompt. SOLUTION: Refresh the page and try again.';
+		RAISE EXCEPTION 'Voting period for this prompt has already passed. SOLUTION: Refresh the page and try again.';
 	END IF;
 
-	INSERT INTO private.submissions
-		(person_id, prompt_id, word)
+	INSERT INTO private.votes
+		(person_id, prompt_id, word_id)
 	VALUES
-		(_my_id, _prompt_id, _word)
+		(_my_id, _prompt_id, _word_id)
 	ON CONFLICT (person_id, prompt_id)
-	DO UPDATE SET word = _word
+	DO UPDATE SET word_id = _word_id
 	RETURNING id INTO ret_id;
 
 	RETURN ret_id;

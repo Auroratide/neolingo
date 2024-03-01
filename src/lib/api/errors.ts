@@ -11,10 +11,14 @@ export function raiseError(error: PostgrestError | null, defaultMessage: string 
 	}
 
 	if (error?.code === PostgresErrorCode.ForeignKeyViolation) {
-		if (error.details.includes("people")) {
+		if (error.message.includes("word_matches_prompt")) {
+			throw new SolveableApiError("Voted word was for a different prompt.", "Try refreshing the page.", error)
+		} else if (error.details.includes("people")) {
 			throw new SolveableApiError(defaultMessage, "Try clearing your browser history for this site and refreshing the page.", error)
 		} else if (error.details.includes("prompts")) {
 			throw new SolveableApiError("Could not find prompt.", "Try refreshing the page.", error)
+		} else if (error.details.includes("words")) {
+			throw new SolveableApiError("Could not find word.", "Try refreshing the page.", error)
 		}
 	}
 
