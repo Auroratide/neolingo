@@ -7,6 +7,16 @@
 	--color-y: oklch(39% 0.11 39);
 }
 
+@media (prefers-color-scheme: light) {
+	:root {
+		--color-a: oklch(97% 0.021 118);
+		--color-e: oklch(80% 0.038 106);
+		--color-i: oklch(51% 0.018 202);
+		--color-o: oklch(45% 0.012 145);
+		--color-u: oklch(37% 0.026 156);
+	}
+}
+
 *, *::before, *::after {
 	box-sizing: border-box;
 	margin: 0;
@@ -94,14 +104,4 @@ button {
 :is(button, input):focus-within {
 	outline: 0.125em dotted var(--color-o);
 	outline-offset: 0.125em;
-}
-
-@media (prefers-color-scheme: light) {
-	:root {
-		--color-a: oklch(97% 0.021 118);
-		--color-e: oklch(80% 0.038 106);
-		--color-i: oklch(51% 0.018 202);
-		--color-o: oklch(45% 0.012 145);
-		--color-u: oklch(37% 0.026 156);
-	}
 }
