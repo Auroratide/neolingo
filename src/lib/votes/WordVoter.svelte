@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Word, WordId } from "./domain"
+	import type { Word, WordId } from "../domain"
 
 	type Props = {
 		id: string,
@@ -21,7 +21,7 @@
 				type="radio"
 				name="{id}"
 				bind:group={value}
-				value={word.id}
+				value="{word.id}"
 				required
 				class="checkmark"
 			/>

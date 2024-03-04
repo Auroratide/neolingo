@@ -1,6 +1,6 @@
 <script lang="ts">
-	import WordVoter from "$lib/WordVoter.svelte"
-	import votes from "$lib/votes.svelte"
+	import WordVoter from "$lib/votes/WordVoter.svelte"
+	import votes from "$lib/votes"
 
 	import FormCard from "$lib/FormCard.svelte"
 
@@ -13,7 +13,7 @@
 
 <FormCard
 	title="Step Two"
-	content={votes.list}
+	content={votes.votableWords}
 	waiting-label="Finding words"
 	submitted-label="Sending your vote"
 	{onsubmit}

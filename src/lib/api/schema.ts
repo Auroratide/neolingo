@@ -15,13 +15,13 @@ export function rowToPrompt(row: PromptRow): Prompt {
 }
 
 export type WordRow = {
-	id: string
+	id: number
 	text: string
 	tally: number
 }
 export function rowToWord(row: WordRow): Word {
 	return {
-		id: row.id,
+		id: row.id.toString(),
 		text: row.text,
 		tally: row.tally,
 	}
