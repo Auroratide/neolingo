@@ -1,8 +1,10 @@
 <script lang="ts">
 	import WordCard from "$lib/WordCard.svelte"
 	import WordCardSkeleton from "$lib/WordCardSkeleton.svelte"
+	import FocusCard from "$lib/FocusCard.svelte"
 	import * as Api from "$lib/api"
 	import { VisuallyHidden } from "$lib/visually-hidden"
+	import Stack from "$lib/Stack.svelte"
 
 	const dictionary = Api.getDictionary()
 </script>
@@ -27,6 +29,15 @@
 			<li><WordCard value={word} /></li>
 		{/each}
 	</ul>
+{:catch error}
+	<FocusCard error>
+		<div class="block-spacing">
+			<Stack size="1em">
+				<p class="title-like"><strong>Something went wrong...</strong></p>
+				<p>{error.message}</p>
+			</Stack>
+		</div>
+	</FocusCard>
 {/await}
 
 <style>
@@ -41,4 +52,7 @@
 		flex-direction: column;
 		gap: 1em;
 	}
+
+	.title-like { font-size: 1.5em; }
+	.block-spacing { padding-block: 1em; }
 </style>
