@@ -395,38 +395,52 @@ describe("api", () => {
 		})
 	})
 
-	test("getDictioanry", async () => {
-		// given
-		const promptIds = await pg.query(`
-			INSERT INTO private.prompts
-				(day, text, letters)
-			VALUES
-				('2024-02-23', 'older prompt', 6),
-				('2024-02-24', 'old prompt', 6)
-			RETURNING id;
-		`).then(result => result.rows.map((it) => it.id))
+	describe("dictionary", () => {
+		beforeEach(async () => {
+			const promptIds = await pg.query(`
+				INSERT INTO private.prompts
+					(day, text, letters)
+				VALUES
+					('2024-02-23', 'older prompt', 6),
+					('2024-02-24', 'old prompt', 6);
+			`).then(result => result.rows.map((it) => it.id))
 
-		await pg.query(`
-			INSERT INTO private.dictionary
-				(prompt_id, word)
-			VALUES
-				($1, 'ancient'),
-				($2, 'old');
-		`, promptIds)
+			await pg.query(`
+				INSERT INTO private.dictionary
+					(prompt_id, word)
+				VALUES
+					(1, 'ancient'),
+					(2, 'old');
+			`, promptIds)
+		})
 
-		// when
-		const result = await Api.getDictionary()
+		test("getDictioanry", async () => {
+			// when
+			const result = await Api.getDictionary()
 
-		// then - ordered by date desc
-		expect(result).toEqual([ {
-			word: "old",
-			definition: "old prompt",
-			day: new Date("2024-02-24T00:00:00.000Z"),
-		}, {
-			word: "ancient",
-			definition: "older prompt",
-			day: new Date("2024-02-23T00:00:00.000Z"),
-		} ])
+			// then - ordered by date desc
+			expect(result).toEqual([ {
+				word: "old",
+				definition: "old prompt",
+				day: new Date("2024-02-24T00:00:00.000Z"),
+			}, {
+				word: "ancient",
+				definition: "older prompt",
+				day: new Date("2024-02-23T00:00:00.000Z"),
+			} ])
+		})
+
+		test("getLastWord", async () => {
+			// when
+			const result = await Api.getLastWord()
+
+			// then - ordered by date desc
+			expect(result).toEqual({
+				word: "old",
+				definition: "old prompt",
+				day: new Date("2024-02-24T00:00:00.000Z"),
+			})
+		})
 	})
 })
 

@@ -1,7 +1,7 @@
 import type { Prompt, MyId, SubmittedWord, SubmittedWordId, PromptId, OfficialWord } from "../domain"
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "$env/static/public"
 import { createClient } from "@supabase/supabase-js"
-import { type PromptRow, rowToPrompt, rowToWord, rowToOfficialWord } from "./schema"
+import { type PromptRow, rowToPrompt, rowToWord, rowToOfficialWord, type DictionaryRow } from "./schema"
 import { raiseError } from "./errors"
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY)
@@ -65,5 +65,17 @@ export async function getDictionary(): Promise<OfficialWord[]> {
 			}
 
 			return data.map(rowToOfficialWord)
+		})
+}
+
+export async function getLastWord(): Promise<OfficialWord> {
+	return await supabase.rpc("get_last_word")
+		.maybeSingle<DictionaryRow>()
+		.then(({ data, error }) => {
+			if (error != null || data == null) {
+				raiseError(error, "Failed to get last word.")
+			}
+
+			return rowToOfficialWord(data)
 		})
 }
