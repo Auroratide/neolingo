@@ -1,11 +1,11 @@
-import type { Word } from "$lib/domain"
+import type { SubmittedWord } from "$lib/domain"
 import { weightedRandom } from "./weighted-random"
 
-export function chooseWords(words: readonly Word[], numberOfWords: number): readonly Word[] {
+export function chooseWords(words: readonly SubmittedWord[], numberOfWords: number): readonly SubmittedWord[] {
 	if (words.length <= numberOfWords) return [...words]
 
 	const weights = words.map((word) => word.tally + 1)
-	const chosenWords: Word[] = []
+	const chosenWords: SubmittedWord[] = []
 
 	while (chosenWords.length < numberOfWords) {
 		const index = weightedRandom(normalizeWeights(weights))

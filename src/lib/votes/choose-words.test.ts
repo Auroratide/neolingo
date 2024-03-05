@@ -1,6 +1,6 @@
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { chooseWords } from "./choose-words"
-import type { Word } from "$lib/domain"
+import type { SubmittedWord } from "$lib/domain"
 
 describe("choose words", () => {
 	afterEach(() => {
@@ -56,6 +56,6 @@ describe("choose words", () => {
 	})
 })
 
-function word(id: string, tally: number): Word {
+function word(id: string, tally: number): SubmittedWord {
 	return { id, text: "word", tally }
 }

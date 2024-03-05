@@ -1,7 +1,7 @@
-import type { Prompt, MyId, Word, WordId, PromptId } from "../domain"
+import type { Prompt, MyId, SubmittedWord, SubmittedWordId, PromptId, OfficialWord } from "../domain"
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY } from "$env/static/public"
 import { createClient } from "@supabase/supabase-js"
-import { type PromptRow, rowToPrompt, rowToWord } from "./schema"
+import { type PromptRow, rowToPrompt, rowToWord, rowToOfficialWord } from "./schema"
 import { raiseError } from "./errors"
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY)
@@ -38,7 +38,7 @@ export async function submitWord(myId: MyId, promptId: PromptId, myWord: string)
 	})
 }
 
-export async function getVotableWords(): Promise<readonly Word[]> {
+export async function getVotableWords(): Promise<readonly SubmittedWord[]> {
 	return await supabase.rpc("get_votable_words")
 		.then(({ data, error }) => {
 			if (error != null || data == null) {
@@ -49,10 +49,21 @@ export async function getVotableWords(): Promise<readonly Word[]> {
 		})
 }
 
-export async function submitVote(myId: MyId, promptId: PromptId, myVote: WordId): Promise<void> {
+export async function submitVote(myId: MyId, promptId: PromptId, myVote: SubmittedWordId): Promise<void> {
 	await supabase.rpc("submit_vote", { _my_id: myId, _prompt_id: promptId, _word_id: myVote }).then(({ error }) => {
 		if (error != null) {
 			raiseError(error, "Failed to submit vote.")
 		}
 	})
+}
+
+export async function getDictionary(): Promise<OfficialWord[]> {
+	return await supabase.rpc("get_dictionary")
+		.then(({ data, error }) => {
+			if (error != null || data == null) {
+				raiseError(error, "Failed to get dictionary.")
+			}
+
+			return data.map(rowToOfficialWord)
+		})
 }

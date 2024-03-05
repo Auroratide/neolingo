@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Word, WordId } from "../domain"
+	import type { SubmittedWord, SubmittedWordId } from "../domain"
 
 	type Props = {
 		id: string,
-		words: readonly Word[],
-		value: WordId | undefined,
+		words: readonly SubmittedWord[],
+		value: SubmittedWordId | undefined,
 	}; let {
 		id,
 		words,

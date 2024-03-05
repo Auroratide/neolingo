@@ -1,7 +1,7 @@
 import { describe, expect, test, beforeAll, afterAll, beforeEach } from "vitest"
 import { Client } from "pg"
 import * as Api from "."
-import type { Word } from "$lib/domain"
+import type { SubmittedWord } from "$lib/domain"
 
 describe("api", () => {
 	const { VITE_LOCAL_PG_URL } = import.meta.env
@@ -313,7 +313,7 @@ describe("api", () => {
 		})
 
 		describe("submitVote validation", () => {
-			let word: Word
+			let word: SubmittedWord
 
 			beforeEach(async () => {
 				await Api.submitWord(alice, promptId, "dolls")
@@ -394,16 +394,51 @@ describe("api", () => {
 			})
 		})
 	})
+
+	test("getDictioanry", async () => {
+		// given
+		const promptIds = await pg.query(`
+			INSERT INTO private.prompts
+				(day, text, letters)
+			VALUES
+				('2024-02-23', 'older prompt', 6),
+				('2024-02-24', 'old prompt', 6)
+			RETURNING id;
+		`).then(result => result.rows.map((it) => it.id))
+
+		await pg.query(`
+			INSERT INTO private.dictionary
+				(prompt_id, word)
+			VALUES
+				($1, 'ancient'),
+				($2, 'old');
+		`, promptIds)
+
+		// when
+		const result = await Api.getDictionary()
+
+		// then - ordered by date desc
+		expect(result).toEqual([ {
+			word: "old",
+			definition: "old prompt",
+			day: new Date("2024-02-24T00:00:00.000Z"),
+		}, {
+			word: "ancient",
+			definition: "older prompt",
+			day: new Date("2024-02-23T00:00:00.000Z"),
+		} ])
+	})
 })
 
 function clearDb(pg: Client) {
 	return pg.query(`
 		TRUNCATE TABLE
-			private.people,
-			private.prompts,
-			private.submissions,
+			private.dictionary,
+			private.votes,
 			private.words,
-			private.votes
+			private.submissions,
+			private.prompts,
+			private.people
 		RESTART IDENTITY;
 	`)
 }

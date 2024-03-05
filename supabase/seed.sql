@@ -1,6 +1,8 @@
 INSERT INTO private.prompts
 	(day, text, letters)
 VALUES
+	(CURRENT_DATE - 2, 'optical illusions induced by refraction through water', 7),
+	(CURRENT_DATE - 1, 'the feeling of peace and comfort one may get when surrounded by nature', 8),
 	(CURRENT_DATE, 'a hike or journey taken during the transition from night to dawn', 6),
 	(CURRENT_DATE + 1, 'optical illusions induced by refraction through water', 7),
 	(CURRENT_DATE + 2, 'the feeling of peace and comfort one may get when surrounded by nature', 8),
@@ -29,10 +31,16 @@ BEGIN
 	INSERT INTO private.submissions
 		(person_id, prompt_id, word)
 	VALUES
-		(alice, 1, 'dawner'),
-		(byakuren, 1, 'nihike'),
-		(cirno, 1, 'strong'),
-		(doremy, 1, 'dreami'),
-		(eirin, 1, 'amblit'),
-		(flandre, 1, 'derire');
+		(alice, 3, 'dawner'),
+		(byakuren, 3, 'nihike'),
+		(cirno, 3, 'strong'),
+		(doremy, 3, 'dreami'),
+		(eirin, 3, 'amblit'),
+		(flandre, 3, 'derire');
 END $$;
+
+INSERT INTO private.dictionary
+	(prompt_id, word)
+VALUES
+	(1, 'wetusion'),
+	(2, 'treebliss');

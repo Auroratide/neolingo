@@ -7,11 +7,17 @@ export type Prompt = {
 	readonly letters: number
 }
 
-export type WordId = string
-export type Word = {
-	readonly id: WordId
+export type SubmittedWordId = string
+export type SubmittedWord = {
+	readonly id: SubmittedWordId
 	readonly text: string
 	readonly tally: number
+}
+
+export type OfficialWord = {
+	readonly word: string
+	readonly definition: string
+	readonly day: Date
 }
 
 export function isSameDay(a: Date, b: Date) {

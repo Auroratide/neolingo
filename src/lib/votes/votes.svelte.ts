@@ -1,24 +1,24 @@
 import * as Api from "../api"
-import type { Word, WordId } from "$lib/domain"
+import type { SubmittedWord, SubmittedWordId } from "$lib/domain"
 import prompt from "$lib/prompt.svelte"
 import day from "$lib/day.svelte"
 import me from "$lib/me.svelte"
 import { chooseWords } from "./choose-words"
 
 export type VotesRune = {
-	readonly allWords: Promise<readonly Word[]>
-	readonly votableWords: Promise<readonly Word[]>
-	readonly myVote: WordId | undefined
-	submitVote: (wordId: WordId) => Promise<void>
+	readonly allWords: Promise<readonly SubmittedWord[]>
+	readonly votableWords: Promise<readonly SubmittedWord[]>
+	readonly myVote: SubmittedWordId | undefined
+	submitVote: (wordId: SubmittedWordId) => Promise<void>
 }
 
 const GENERATED = "votes:generated"
 const VOTABLE = "votes:votable"
 const MY_VOTE = "votes:my-vote"
 
-let allWords = $state<Promise<readonly Word[]>>(new Promise(() => {}))
-let votableWords = $state<Promise<readonly Word[]>>(new Promise(() => {}))
-let myVote = $state<WordId | undefined>(undefined)
+let allWords = $state<Promise<readonly SubmittedWord[]>>(new Promise(() => {}))
+let votableWords = $state<Promise<readonly SubmittedWord[]>>(new Promise(() => {}))
+let myVote = $state<SubmittedWordId | undefined>(undefined)
 
 $effect.root(() => {
 	$effect(() => {
@@ -50,7 +50,7 @@ export default {
 	get allWords() { return allWords },
 	get votableWords() { return votableWords },
 	get myVote() { return myVote },
-	submitVote: async (wordId: WordId) => {
+	submitVote: async (wordId: SubmittedWordId) => {
 		await Api.submitVote(await me.id, (await prompt.content).id, wordId)
 		localStorage.setItem(MY_VOTE, wordId)
 	},
