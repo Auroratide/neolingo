@@ -105,3 +105,8 @@ button {
 	outline: 0.125em dotted var(--color-o);
 	outline-offset: 0.125em;
 }
+
+dfn {
+	font-style: normal;
+	font-weight: bold;
+}

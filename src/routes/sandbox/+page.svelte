@@ -1,16 +1,9 @@
 <script lang="ts">
-	import notifications from "$lib/notifications"
-	import Notifier from "$lib/notifications/Notifier.svelte"
-
-	const makeNormie = () => {
-		notifications.normie("It worked!", "This is more detailed message.")
-	}
-
-	const makeError = () => {
-		notifications.error(Object.assign(new Error("This is a test error"), { solution: "The solution is this." }))
-	}
+	import WordCard from "$lib/WordCard.svelte"
 </script>
 
-<Notifier />
-<button onclick={makeNormie}>Make normie</button>
-<button onclick={makeError}>Make error</button>
+<WordCard value={{
+	word: "auction",
+	definition: "something interesting was sold at a place with a lot of money",
+	day: new Date("2024-03-01T00:00:00Z"),
+}} />
