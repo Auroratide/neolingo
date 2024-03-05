@@ -11,7 +11,7 @@
 </script>
 
 <FormCard
-	title="Step One"
+	title="Invent a Word"
 	content={prompt.content}
 	waiting-label="Creating a prompt"
 	submitted-label="Sending your word"

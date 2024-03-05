@@ -12,7 +12,7 @@
 </script>
 
 <FormCard
-	title="Step Two"
+	title="Vote"
 	content={votes.votableWords}
 	waiting-label="Finding words"
 	submitted-label="Sending your vote"
