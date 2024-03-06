@@ -110,3 +110,31 @@ dfn {
 	font-style: normal;
 	font-weight: bold;
 }
+
+blockquote {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+	border: 0.25em solid var(--color-a);
+	background: var(--color-i);
+	padding: 1em 1.5em;
+	position: relative;
+
+	&::before, &::after {
+		content: "";
+		position: absolute;
+		width: 0.25em;
+		background: var(--color-a);
+		pointer-events: none;
+	}
+
+	&::before {
+		inset-block: 0.75em;
+		inset-inline-start: 0.5em;
+	}
+
+	&::after {
+		inset-block: 0.75em;
+		inset-inline-end: 0.5em;
+	}
+}

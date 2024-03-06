@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Elevated } from "$lib/elevated"
 	import type { ErrorNotification, NormieNotification, Notification } from "./notifications.svelte"
 	import { fly } from "svelte/transition"
 
@@ -17,7 +18,7 @@
 	const titleLabel = $derived(`${value.id}-title`)
 </script>
 
-<dialog id="{value.id}" {open} class="{value.type}" transition:fly={{ duration: 350, x: "3em" }} aria-labelledby="{titleLabel}">
+<dialog id="{value.id}" {open} class="{value.type} {Elevated}" transition:fly={{ duration: 350, x: "3em" }} aria-labelledby="{titleLabel}">
 	<section>
 		<p id="{titleLabel}"><strong>{value.title}</strong></p>
 		{#if value.type === "normie"}
@@ -49,7 +50,6 @@
 		padding: 0.5em 0.75em;
 		background: var(--bg);
 		border: 0.25em solid var(--border);
-		box-shadow: 0 0.125em 0.5em -0.125em oklch(0% 0 0 / 0.333);
 		color: var(--color-u);
 		transition: opacity 350ms ease-out;
 		z-index: 9;

@@ -37,6 +37,9 @@ $effect.root(() => {
 				})
 					
 				return newWords
+			}).catch((e) => {
+				votableWords = Promise.reject(e)
+				throw e
 			})
 		} else {
 			allWords = Api.getVotableWords()

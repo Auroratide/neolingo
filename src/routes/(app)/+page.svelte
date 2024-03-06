@@ -1,15 +1,17 @@
 <script lang="ts">
 	import Stack from "$lib/Stack.svelte"
 	import Introduction from "./Introduction.svelte"
-	import StepOne from "./InventWord.svelte"
-	import StepTwo from "./Vote.svelte"
+	import InventWord from "./InventWord.svelte"
+	import Vote from "./Vote.svelte"
+	import NextSteps from "./NextSteps.svelte"
 </script>
 
 <svelte:head>
 	<title>Fictionary</title>
 </svelte:head>
-<Stack>
+<Stack size="3em">
 	<Introduction />
-	<StepOne />
-	<StepTwo />
+	<InventWord />
+	<Vote />
+	<NextSteps />
 </Stack>

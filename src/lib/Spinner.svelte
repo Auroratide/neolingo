@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Elevated } from "./elevated"
+
 	type Props = {
 		label: string
 	}; const {
@@ -6,7 +8,7 @@
 	} = $props<Props>()
 </script>
 
-<div class="spinner">
+<div class="spinner {Elevated}">
 	<div class="line"></div>
 	<div class="line" style:--delay="-0.67s"></div>
 	<div class="line" style:--delay="-0.33s"></div>
