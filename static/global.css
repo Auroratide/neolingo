@@ -41,6 +41,13 @@ h1 { font-size: 3em; }
 h2 { font-size: 2em; }
 p { line-height: 1.15; }
 
+a {
+	color: var(--color-o);
+	text-decoration: underline;
+
+	&:hover, &:focus { text-decoration: none; }
+}
+
 button {
 	font-size: 1em;
 	border: 0.25em solid var(--color-o);
@@ -106,7 +113,7 @@ button {
 	}
 }
 
-:is(button, input):focus-within {
+:is(button, input, a):focus-visible {
 	outline: 0.125em dotted var(--color-o);
 	outline-offset: 0.125em;
 }
