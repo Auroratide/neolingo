@@ -55,6 +55,7 @@ export default {
 	get myVote() { return myVote },
 	submitVote: async (wordId: SubmittedWordId) => {
 		await Api.submitVote(await me.id, (await prompt.content).id, wordId)
+		myVote = wordId
 		localStorage.setItem(MY_VOTE, wordId)
 	},
 } satisfies VotesRune

@@ -3,7 +3,7 @@
 	import prompt from "$lib/prompt.svelte"
 </script>
 
-<FocusCard>
+<FocusCard id="whats-next-section">
 	<div class="small-stack">
 		<h2 class="text-center">What's next?</h2>
 		<p class="text-center balance more-space-after">Come back tomorrow to see which word won and then invent another new word!</p>

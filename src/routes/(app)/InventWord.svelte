@@ -11,11 +11,16 @@
 </script>
 
 <FormCard
+	id="invent-a-word-section"
 	title="Invent a Word"
 	content={prompt.content}
 	waiting-label="Creating a prompt"
 	submitted-label="Sending your word"
 	{onsubmit}
+	transitionTo={{
+		id: "vote-section",
+		shouldTransition: () => (prompt.myWord?.length ?? 0) === 0,
+	}}
 >
 	{#snippet form(content)}
 		<p>Invent a word that means:</p>

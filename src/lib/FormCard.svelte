@@ -6,6 +6,11 @@
 	import notifications from "$lib/notifications"
 
 	type Props = {
+		id?: string
+		transitionTo?: {
+			id: string,
+			shouldTransition: () => boolean,
+		},
 		title: string,
 		content: Promise<TContent>,
 		form: Snippet<[TContent | undefined, string | undefined]>, // content; error
@@ -13,6 +18,8 @@
 		"submitted-label": string,
 		onsubmit: (form: FormData) => Promise<void>,
 	}; const {
+		id,
+		transitionTo,
 		title,
 		content,
 		form,
@@ -27,9 +34,17 @@
 		submitting = true
 
 		const form = new FormData(e.currentTarget as HTMLFormElement, e.submitter)
+
+		const shouldTransition = transitionTo?.shouldTransition() ?? false
 		await submitData(form)
 			.catch((e) => notifications.error(e as Error))
 			.finally(() => submitting = false)
+
+		if (shouldTransition) {
+			setTimeout(() => {
+				document.querySelector(`#${transitionTo!.id}`)?.scrollIntoView()
+			}, 100)
+		}
 	}
 
 	let contentFailed = $state(false)
@@ -58,7 +73,7 @@
 	</div>
 {/snippet}
 
-<FocusCard error={contentFailed}>
+<FocusCard {id} error={contentFailed}>
 	<div class="all-text-centered overlay-container">
 		<h2>{title}</h2>
 		{#await content}

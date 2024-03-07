@@ -1,22 +1,61 @@
 <script lang="ts">
 	import type { Snippet } from "svelte"
+	import { slide } from "svelte/transition"
+	import { prefersReducedMotion } from "./media-query"
 
 	type Props = {
+		id?: string
 		focus?: boolean
 		error?: boolean
 		children: Snippet
 	}; const {
+		id,
 		focus = false,
 		error = false,
 		children,
 	} = $props<Props>()
+
+	let transitioning = $state(false)
+	const onTransitionStart = () => transitioning = true
+	const onTransitionEnd = () => transitioning = false
+	const transitionConfig = prefersReducedMotion()
+		? { delay: 0, duration: 0 }
+		: { delay: 300 }
 </script>
 
-<section class="focus-card" class:focus class:error>
-	{@render children()}
-</section>
+<div class="position-container">
+	<section
+		{id}
+		class="focus-card"
+		class:focus
+		class:error
+		class:transitioning
+		transition:slide={transitionConfig}
+		onintrostart={onTransitionStart}
+		onintroend={onTransitionEnd}
+	>
+		{@render children()}
+	</section>
+	{#if transitioning}
+		<!-- Shadow element ensures space exists for the transitioning element -->
+		<!-- This reduces layout shift and enables scrolling to the element before its transition finishes -->
+		<div
+			aria-hidden="true"
+			class="focus-card"
+			style:visibility="hidden"
+			inert
+		>
+			{@render children()}
+		</div>
+	{/if}
+</div>
 
 <style>
+	.position-container {
+		position: relative;
+		width: 100%;
+	}
+
 	.focus-card {
 		position: relative;
 		background: var(--color-e);
@@ -71,5 +110,11 @@
 		&::before, &::after {
 			background: var(--color-y);
 		}
+	}
+
+	.transitioning {
+		position: absolute;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 	}
 </style>

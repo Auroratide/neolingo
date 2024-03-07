@@ -24,6 +24,11 @@
 
 html {
 	background: var(--color-a);
+	scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
 }
 
 body {

@@ -4,6 +4,8 @@
 	import InventWord from "./InventWord.svelte"
 	import Vote from "./Vote.svelte"
 	import NextSteps from "./NextSteps.svelte"
+	import prompt from "$lib/prompt.svelte"
+	import votes from "$lib/votes"
 </script>
 
 <svelte:head>
@@ -12,6 +14,10 @@
 <Stack size="3em">
 	<Introduction />
 	<InventWord />
-	<Vote />
-	<NextSteps />
+	{#if prompt.myWord}
+		<Vote />
+	{/if}
+	{#if votes.myVote}
+		<NextSteps />
+	{/if}
 </Stack>
