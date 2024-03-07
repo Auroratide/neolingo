@@ -7,18 +7,20 @@
 		id?: string
 		focus?: boolean
 		error?: boolean
+		transition?: boolean
 		children: Snippet
 	}; const {
 		id,
 		focus = false,
 		error = false,
+		transition = false,
 		children,
 	} = $props<Props>()
 
 	let transitioning = $state(false)
 	const onTransitionStart = () => transitioning = true
 	const onTransitionEnd = () => transitioning = false
-	const transitionConfig = prefersReducedMotion()
+	const transitionConfig = !transition || prefersReducedMotion()
 		? { delay: 0, duration: 0 }
 		: { delay: 300 }
 </script>

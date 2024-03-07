@@ -73,7 +73,7 @@
 	</div>
 {/snippet}
 
-<FocusCard {id} error={contentFailed}>
+<FocusCard {id} error={contentFailed} transition>
 	<div class="all-text-centered overlay-container">
 		<h2>{title}</h2>
 		{#await content}
