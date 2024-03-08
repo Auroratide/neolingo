@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Stack from "$lib/Stack.svelte"
+	import Stack from "$lib/design-system/Stack.svelte"
 </script>
 
 <svelte:head>

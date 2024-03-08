@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { OfficialWord } from "./domain"
+	import type { OfficialWord } from "../domain"
 
 	type Props = {
 		value: OfficialWord

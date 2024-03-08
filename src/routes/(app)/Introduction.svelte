@@ -1,7 +1,7 @@
 <script lang="ts">
-	import WordCard from "$lib/WordCard.svelte"
-	import WordCardSkeleton from "$lib/WordCardSkeleton.svelte"
-	import FocusCard from "$lib/FocusCard.svelte"
+	import WordCard from "$lib/design-system/WordCard.svelte"
+	import WordCardSkeleton from "$lib/design-system/WordCardSkeleton.svelte"
+	import FocusCard from "$lib/design-system/FocusCard.svelte"
 	import * as Api from "$lib/api"
 
 	const lastWord = Api.getLastWord()

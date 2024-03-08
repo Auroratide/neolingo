@@ -1,10 +1,10 @@
 <script lang="ts">
-	import WordCard from "$lib/WordCard.svelte"
-	import WordCardSkeleton from "$lib/WordCardSkeleton.svelte"
-	import FocusCard from "$lib/FocusCard.svelte"
+	import WordCard from "$lib/design-system/WordCard.svelte"
+	import WordCardSkeleton from "$lib/design-system/WordCardSkeleton.svelte"
+	import FocusCard from "$lib/design-system/FocusCard.svelte"
 	import * as Api from "$lib/api"
-	import { VisuallyHidden } from "$lib/visually-hidden"
-	import Stack from "$lib/Stack.svelte"
+	import { VisuallyHidden } from "$lib/design-system/visually-hidden"
+	import Stack from "$lib/design-system/Stack.svelte"
 
 	const dictionary = Api.getDictionary()
 </script>

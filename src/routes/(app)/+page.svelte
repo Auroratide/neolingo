@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Stack from "$lib/Stack.svelte"
+	import Stack from "$lib/design-system/Stack.svelte"
 	import Introduction from "./Introduction.svelte"
 	import InventWord from "./InventWord.svelte"
 	import Vote from "./Vote.svelte"
 	import NextSteps from "./NextSteps.svelte"
-	import prompt from "$lib/prompt.svelte"
+	import prompt from "$lib/prompt/prompt.svelte"
 	import votes from "$lib/votes"
 </script>
 

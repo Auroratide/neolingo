@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Elevated } from "$lib/elevated"
+	import { Elevated } from "$lib/design-system/elevated"
 	import type { ErrorNotification, NormieNotification, Notification } from "./notifications.svelte"
 	import { fly } from "svelte/transition"
 

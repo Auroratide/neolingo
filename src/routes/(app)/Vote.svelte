@@ -2,7 +2,7 @@
 	import WordVoter from "$lib/votes/WordVoter.svelte"
 	import votes from "$lib/votes"
 
-	import FormCard from "$lib/FormCard.svelte"
+	import FormCard from "$lib/design-system/FormCard.svelte"
 
 	let currentVote = $state(votes.myVote)
 

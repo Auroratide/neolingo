@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from "svelte"
-	import Container from "$lib/Container.svelte"
-	import Stack from "$lib/Stack.svelte"
+	import Container from "$lib/design-system/Container.svelte"
+	import Stack from "$lib/design-system/Stack.svelte"
 	import Notifier from "$lib/notifications/Notifier.svelte"
 
 	type Props = { children: Snippet }

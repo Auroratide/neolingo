@@ -1,7 +1,7 @@
-import * as Api from "./api"
-import type { Prompt } from "./domain"
-import day from "./day.svelte"
-import me from "./me.svelte"
+import * as Api from "../api"
+import type { Prompt } from "../domain"
+import day from "../day.svelte"
+import me from "../me.svelte"
 
 export type PromptRune = {
 	readonly content: Promise<Prompt>

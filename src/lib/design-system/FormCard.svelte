@@ -1,8 +1,8 @@
 <script lang="ts" generics="TContent">
 	import type { Snippet } from "svelte"
-	import FocusCard from "$lib/FocusCard.svelte"
-	import Spinner from "$lib/Spinner.svelte"
-	import Stack from "$lib/Stack.svelte"
+	import FocusCard from "$lib/design-system/FocusCard.svelte"
+	import Spinner from "$lib/design-system/Spinner.svelte"
+	import Stack from "$lib/design-system/Stack.svelte"
 	import notifications from "$lib/notifications"
 
 	type Props = {

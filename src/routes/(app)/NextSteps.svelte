@@ -1,6 +1,6 @@
 <script lang="ts">
-	import FocusCard from "$lib/FocusCard.svelte"
-	import prompt from "$lib/prompt.svelte"
+	import FocusCard from "$lib/design-system/FocusCard.svelte"
+	import prompt from "$lib/prompt/prompt.svelte"
 	import Share from "./Share.svelte"
 </script>
 

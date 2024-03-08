@@ -1,7 +1,7 @@
 <script lang="ts">
-	import LetterByLetterInput from "$lib/LetterByLetterInput.svelte"
-	import prompt from "$lib/prompt.svelte"
-	import FormCard from "$lib/FormCard.svelte"
+	import LetterByLetterInput from "$lib/prompt/LetterByLetterInput.svelte"
+	import prompt from "$lib/prompt/prompt.svelte"
+	import FormCard from "$lib/design-system/FormCard.svelte"
 
 	let currentWord = $state(prompt.myWord)
 
