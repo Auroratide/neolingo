@@ -1,25 +1,9 @@
-import { describe, expect, test, beforeAll, afterAll, beforeEach } from "vitest"
-import { Client } from "pg"
+import { describe, expect, test, beforeEach } from "vitest"
 import * as Api from "."
 import type { SubmittedWord } from "$lib/domain"
+import { withDb } from "$test/withDb"
 
-describe("api", () => {
-	const { VITE_LOCAL_PG_URL } = import.meta.env
-	let pg: Client
-
-	beforeAll(async () => {
-		pg = new Client(VITE_LOCAL_PG_URL)
-		await pg.connect()
-	})
-
-	afterAll(async () => {
-		await pg.end()
-	})
-
-	beforeEach(async () => {
-		await clearDb(pg)
-	})
-
+describe("api", withDb((pg) => {
 	test("generateMyId", async () => {
 		const result1 = await Api.generateMyId()
 		const result2 = await Api.generateMyId()
@@ -442,17 +426,4 @@ describe("api", () => {
 			})
 		})
 	})
-})
-
-function clearDb(pg: Client) {
-	return pg.query(`
-		TRUNCATE TABLE
-			private.dictionary,
-			private.votes,
-			private.words,
-			private.submissions,
-			private.prompts,
-			private.people
-		RESTART IDENTITY;
-	`)
-}
+}))
