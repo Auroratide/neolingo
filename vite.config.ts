@@ -7,6 +7,7 @@ export default defineConfig({
 		port: 3000,
 	},
 	test: {
+		environment: "jsdom",
 		include: ["src/**/*.{test,spec}.{js,ts}"],
 	},
 })
