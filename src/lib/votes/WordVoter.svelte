@@ -1,21 +1,31 @@
 <script lang="ts">
+	import { VisuallyHidden } from "$lib/design-system/visually-hidden"
 	import type { SubmittedWord, SubmittedWordId } from "../domain"
+	import { fly } from "svelte/transition"
 
 	type Props = {
 		id: string,
 		words: readonly SubmittedWord[],
 		value: SubmittedWordId | undefined,
+		onreplaceword: (index: number) => void,
 	}; let {
 		id,
 		words,
 		value,
+		onreplaceword,
 	} = $props<Props>()
 </script>
 
 <fieldset>
 	<legend>Which word do you like best?</legend>
 	<div class="gridded-radios larger">
-		{#each words as word (word.id)}
+		{#each words as word, i (word.id)}
+			<!-- grid areas help the transition to overlap correctly -->
+			<div style:grid-area="{i + 1} / 1 / {i + 2} / 2"><!-- spacing --></div>
+			<button type="button" onclick={() => onreplaceword(i)} title="Replace {word.text}" style:grid-area="{i + 1} / 2 / {i + 2} / 3">
+				<span class="{VisuallyHidden}">Replace {word.text}</span>
+				<span aria-hidden="true">&times;</span>
+			</button>
 			<input
 				id="{id}-{word.id}"
 				type="radio"
@@ -24,8 +34,11 @@
 				value="{word.id}"
 				required
 				class="checkmark"
+				style:grid-area="{i + 1} / 3 / {i + 2} / 4"
 			/>
-			<label for="{id}-{word.id}">{word.text}</label>
+			<label for="{id}-{word.id}" in:fly={{ x: -20, duration: 120, delay: 60 }} out:fly={{ x: 20, duration: 120 }} style:grid-area="{i + 1} / 4 / {i + 2} / 5">
+				{word.text}
+			</label>
 		{/each}
 	</div>
 </fieldset>
@@ -46,18 +59,21 @@
 
 	.gridded-radios {
 		display: grid;
-		grid-template-columns: 2fr 5fr;
+		grid-template-columns: 1fr auto auto 5fr;
 		column-gap: 0.5em;
 		row-gap: 0.5em;
 		text-align: start;
 
-		input {
-			place-self: center end;
+		button {
+			display: block;
+			width: 1.5em;
+			place-self: center start;
+			text-align: center;
 		}
 
-		label {
-			place-self: center start;
-		}
+		input { place-self: center end; }
+
+		label { place-self: center start; }
 	}
 
 	.larger { font-size: 1.25em; }
@@ -134,5 +150,20 @@
 		.checkmark::after {
 			transition: none;
 		}
+	}
+
+	button {
+		all: unset;
+		cursor: pointer;
+		color: var(--color-o);
+
+		&:hover { color: var(--color-u); }
+
+		&:focus-visible {
+			outline: 0.125em dotted var(--color-o);
+			outline-offset: 0.125em;
+		}
+
+		&::before, &::after { all: unset; }
 	}
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import WordVoter from "$lib/votes/WordVoter.svelte"
-	import votes from "$lib/votes"
+	import votes, { WORDS_TO_CHOOSE } from "$lib/votes"
 
 	import FormCard from "$lib/design-system/FormCard.svelte"
 
@@ -10,11 +10,14 @@
 		await votes.submitVote(form.get("word-vote") as string)
 	}
 
-	const placeholder = [...Array(3).keys()].map((i) => ({
+	const placeholder = [...Array(WORDS_TO_CHOOSE).keys()].map((i) => ({
 		id: (-i).toString(),
 		text: "placeholder",
 		tally: 0,
 	}))
+
+	// do nothing for now; this should be tested properly
+	const onreplaceword = () => {}
 </script>
 
 <FormCard
@@ -31,7 +34,7 @@
 >
 	{#snippet form(content)}
 		<p>Choose a favorite word that isn't your own:</p>
-		<WordVoter id="word-vote" words={content != null ? content : placeholder} bind:value={currentVote} />
+		<WordVoter id="word-vote" words={content != null ? content : placeholder} bind:value={currentVote} {onreplaceword} />
 		<button type="submit" class="slightly-larger" disabled={currentVote == null}>
 			Submit Vote
 		</button>

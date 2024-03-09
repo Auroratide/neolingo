@@ -5,6 +5,8 @@ import day from "$lib/day.svelte"
 import me from "$lib/me.svelte"
 import { chooseWords } from "./choose-words"
 
+export const WORDS_TO_CHOOSE = 3
+
 export type VotesRune = {
 	readonly allWords: Promise<readonly SubmittedWord[]>
 	readonly votableWords: Promise<readonly SubmittedWord[]>
@@ -31,7 +33,7 @@ $effect.root(() => {
 			allWords = Api.getVotableWords().then((newWords) => {
 				localStorage.setItem(GENERATED, new Date().toISOString())
 
-				votableWords = Promise.resolve(chooseWords(newWords, 3)).then((votableWords) => {
+				votableWords = Promise.resolve(chooseWords(newWords, WORDS_TO_CHOOSE)).then((votableWords) => {
 					localStorage.setItem(VOTABLE, JSON.stringify(votableWords))
 					return votableWords
 				})
