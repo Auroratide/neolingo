@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach } from "vitest"
 import votes from "./votes.svelte"
 import { withDb } from "$test/withDb"
-import type { Prompt, PromptId, SubmittedWord } from "$lib/domain"
+import type { Prompt, PromptId } from "$lib/domain"
 import * as Api from "$lib/api"
 
 describe("votes", withDb((db) => {
@@ -14,22 +14,19 @@ describe("votes", withDb((db) => {
 	})
 
 	describe("replaceWord", () => {
-		let votableWords: readonly SubmittedWord[]
-
 		beforeEach(async () => {
-			votableWords = await votes.votableWords
+			await votes.allWords
 
-			expect(votableWords.length).toBeGreaterThan(0)
+			expect(votes.votableWords.length).toBeGreaterThan(0)
 		})
 
 		test("replacing a word", async () => {
-			const [wordToReplace, ...otherWords] = votableWords
+			const [wordToReplace, ...otherWords] = votes.votableWords
 
 			await votes.replaceWord(0)
-			votableWords = await votes.votableWords
 
-			expect(votableWords[0]).not.toEqual(wordToReplace)
-			expect(votableWords.slice(1)).toEqual(otherWords)
+			expect(votes.votableWords[0]).not.toEqual(wordToReplace)
+			expect(votes.votableWords.slice(1)).toEqual(otherWords)
 		})
 	})
 }))
