@@ -16,8 +16,9 @@
 		tally: 0,
 	}))
 
-	// do nothing for now; this should be tested properly
-	const onreplaceword = () => {}
+	const onreplaceword = (index: number) => {
+		votes.replaceWord(index)
+	}
 </script>
 
 <FormCard

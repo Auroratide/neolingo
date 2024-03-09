@@ -12,6 +12,7 @@ export type VotesRune = {
 	readonly votableWords: Promise<readonly SubmittedWord[]>
 	readonly myVote: SubmittedWordId | undefined
 	submitVote: (wordId: SubmittedWordId) => Promise<void>
+	replaceWord: (index: number) => Promise<void>
 }
 
 const GENERATED = "votes:generated"
@@ -51,13 +52,27 @@ $effect.root(() => {
 	})
 })
 
+async function submitVote(id: SubmittedWordId) {
+	await Api.submitVote(await me.id, (await prompt.content).id, id)
+	myVote = id
+	localStorage.setItem(MY_VOTE, id)
+}
+
+async function replaceWord(index: number) {
+	const currentAllWords = await allWords
+	const currentVotableWords = await votableWords
+	const wordToReplace = currentVotableWords[index]
+	const wordsToChooseFrom = currentAllWords.filter((word) => word.id !== wordToReplace.id)
+
+	const newWord = chooseWords(wordsToChooseFrom, 1)[0]
+
+	votableWords = Promise.resolve(currentVotableWords.toSpliced(index, 1, newWord))
+}
+
 export default {
 	get allWords() { return allWords },
 	get votableWords() { return votableWords },
 	get myVote() { return myVote },
-	submitVote: async (wordId: SubmittedWordId) => {
-		await Api.submitVote(await me.id, (await prompt.content).id, wordId)
-		myVote = wordId
-		localStorage.setItem(MY_VOTE, wordId)
-	},
+	submitVote,
+	replaceWord,
 } satisfies VotesRune
