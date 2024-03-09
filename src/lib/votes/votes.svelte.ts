@@ -9,7 +9,7 @@ export const WORDS_TO_CHOOSE = 3
 
 export type VotesRune = {
 	readonly allWords: Promise<readonly SubmittedWord[]>
-	readonly votableWords: Promise<readonly SubmittedWord[]>
+	readonly votableWords: readonly SubmittedWord[]
 	readonly myVote: SubmittedWordId | undefined
 	submitVote: (wordId: SubmittedWordId) => Promise<void>
 	replaceWord: (index: number) => Promise<void>
@@ -20,7 +20,7 @@ const VOTABLE = "votes:votable"
 const MY_VOTE = "votes:my-vote"
 
 let allWords = $state<Promise<readonly SubmittedWord[]>>(new Promise(() => {}))
-let votableWords = $state<Promise<readonly SubmittedWord[]>>(new Promise(() => {}))
+let votableWords = $state<readonly SubmittedWord[]>([])
 let myVote = $state<SubmittedWordId | undefined>(undefined)
 
 $effect.root(() => {
@@ -34,19 +34,14 @@ $effect.root(() => {
 			allWords = Api.getVotableWords().then((newWords) => {
 				localStorage.setItem(GENERATED, new Date().toISOString())
 
-				votableWords = Promise.resolve(chooseWords(newWords, WORDS_TO_CHOOSE)).then((votableWords) => {
-					localStorage.setItem(VOTABLE, JSON.stringify(votableWords))
-					return votableWords
-				})
+				votableWords = chooseWords(newWords, WORDS_TO_CHOOSE)
+				localStorage.setItem(VOTABLE, JSON.stringify(votableWords))
 					
 				return newWords
-			}).catch((e) => {
-				votableWords = Promise.reject(e)
-				throw e
 			})
 		} else {
 			allWords = Api.getVotableWords()
-			votableWords = Promise.resolve(JSON.parse(localStorage.getItem(VOTABLE) ?? "[]"))
+			votableWords = JSON.parse(localStorage.getItem(VOTABLE) ?? "[]")
 			myVote = localStorage.getItem(MY_VOTE) ?? undefined
 		}
 	})
@@ -66,7 +61,7 @@ async function replaceWord(index: number) {
 
 	const newWord = chooseWords(wordsToChooseFrom, 1)[0]
 
-	votableWords = Promise.resolve(currentVotableWords.toSpliced(index, 1, newWord))
+	votableWords = currentVotableWords.toSpliced(index, 1, newWord)
 }
 
 export default {

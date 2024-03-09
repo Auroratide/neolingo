@@ -24,7 +24,7 @@
 <FormCard
 	id="vote-section"
 	title="Vote"
-	content={votes.votableWords}
+	content={votes.allWords}
 	waiting-label="Finding words"
 	submitted-label="Sending your vote"
 	{onsubmit}
@@ -35,7 +35,7 @@
 >
 	{#snippet form(content)}
 		<p>Choose a favorite word that isn't your own:</p>
-		<WordVoter id="word-vote" words={content != null ? content : placeholder} bind:value={currentVote} {onreplaceword} />
+		<WordVoter id="word-vote" words={content != null ? votes.votableWords : placeholder} bind:value={currentVote} {onreplaceword} />
 		<button type="submit" class="slightly-larger" disabled={currentVote == null}>
 			Submit Vote
 		</button>
