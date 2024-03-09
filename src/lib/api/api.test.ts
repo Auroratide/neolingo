@@ -3,7 +3,7 @@ import * as Api from "."
 import type { SubmittedWord } from "$lib/domain"
 import { withDb } from "$test/withDb"
 
-describe("api", withDb((pg) => {
+describe("api", withDb((db) => {
 	test("generateMyId", async () => {
 		const result1 = await Api.generateMyId()
 		const result2 = await Api.generateMyId()
@@ -20,7 +20,7 @@ describe("api", withDb((pg) => {
 		const expectedText = "PROMPT FROM TEST"
 		const expectedLetters = 2
 
-		await pg.query(`
+		await db.query(`
 			INSERT INTO private.prompts
 				(day, text, letters)
 			VALUES
@@ -44,7 +44,7 @@ describe("api", withDb((pg) => {
 			const todayText = "PROMPT FROM TEST TODAY"
 			const todayLetters = 5
 
-			await pg.query(`
+			await db.query(`
 				INSERT INTO private.prompts
 					(day, text, letters)
 				VALUES
@@ -58,7 +58,7 @@ describe("api", withDb((pg) => {
 			const yesterText = "PROMPT FROM TEST YESTERDAY"
 			const yesterLetters = 6
 
-			await pg.query(`
+			await db.query(`
 				INSERT INTO private.prompts
 					(day, text, letters)
 				VALUES
@@ -79,7 +79,7 @@ describe("api", withDb((pg) => {
 			await Api.submitWord(myId, prompt.id, myWord)
 
 			// then
-			const result = await pg.query(`
+			const result = await db.query(`
 				SELECT * FROM private.submissions WHERE person_id = $1 AND prompt_id = $2
 			`, [myId, prompt.id])
 			
@@ -100,7 +100,7 @@ describe("api", withDb((pg) => {
 			await Api.submitWord(myId, prompt.id, mySecondWord)
 
 			// then
-			const result = await pg.query(`
+			const result = await db.query(`
 				SELECT * FROM private.submissions WHERE person_id = $1 AND prompt_id = $2
 			`, [myId, prompt.id])
 
@@ -169,7 +169,7 @@ describe("api", withDb((pg) => {
 			// given
 			const yesterNow = new Date(Date.now() - 1000 * 60 * 60 * 24)
 			const yesterday = yesterNow.toISOString().split("T")[0]
-			const [promptId, letters] = await pg.query(`
+			const [promptId, letters] = await db.query(`
 				SELECT id, letters FROM private.prompts WHERE day = $1
 			`, [yesterday]).then(result => [result.rows[0].id, result.rows[0].letters])
 
@@ -197,7 +197,7 @@ describe("api", withDb((pg) => {
 			const todayText = "PROMPT FROM TEST TODAY"
 			const todayLetters = 5
 
-			await pg.query(`
+			await db.query(`
 				INSERT INTO private.prompts
 					(day, text, letters)
 				VALUES
@@ -206,7 +206,7 @@ describe("api", withDb((pg) => {
 				DO UPDATE SET text = EXCLUDED.text, letters = EXCLUDED.letters
 			`, [today, todayText, todayLetters])
 
-			promptId = await pg.query(`
+			promptId = await db.query(`
 				SELECT id FROM private.prompts WHERE day = $1;
 			`, [today]).then(result => result.rows[0].id)
 
@@ -341,13 +341,13 @@ describe("api", withDb((pg) => {
 				// given
 				const todaysPromptId = promptId
 
-				const olderPromptId = await pg.query(`
+				const olderPromptId = await db.query(`
 					INSERT INTO private.prompts (day, text, letters)
 					VALUES ('2024-02-20', 'older prompt', 6)
 					RETURNING id;
 				`).then(result => result.rows[0].id)
 
-				const olderWordId = await pg.query(`
+				const olderWordId = await db.query(`
 					INSERT INTO private.words (prompt_id, text) VALUES ($1, 'fakest') RETURNING id;
 				`, [olderPromptId]).then(result => result.rows[0].id)
 
@@ -360,13 +360,13 @@ describe("api", withDb((pg) => {
 
 			test("prompt is no longer applicable for today", async () => {
 				// given
-				const olderPromptId = await pg.query(`
+				const olderPromptId = await db.query(`
 					INSERT INTO private.prompts (day, text, letters)
 					VALUES ('2024-02-24', 'older prompt', 6)
 					RETURNING id;
 				`).then(result => result.rows[0].id)
 
-				const olderWordId = await pg.query(`
+				const olderWordId = await db.query(`
 					INSERT INTO private.words (prompt_id, text) VALUES ($1, 'fakest') RETURNING id;
 				`, [olderPromptId]).then(result => result.rows[0].id)
 
@@ -381,7 +381,7 @@ describe("api", withDb((pg) => {
 
 	describe("dictionary", () => {
 		beforeEach(async () => {
-			const promptIds = await pg.query(`
+			const promptIds = await db.query(`
 				INSERT INTO private.prompts
 					(day, text, letters)
 				VALUES
@@ -389,7 +389,7 @@ describe("api", withDb((pg) => {
 					('2024-02-24', 'old prompt', 6);
 			`).then(result => result.rows.map((it) => it.id))
 
-			await pg.query(`
+			await db.query(`
 				INSERT INTO private.dictionary
 					(prompt_id, word)
 				VALUES
