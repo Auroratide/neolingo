@@ -31,7 +31,7 @@
 
 <div class="small-stack" class:invisible={word.length === 0}>
 	<p>Share your word on social media:</p>
-	<blockquote>
+	<blockquote class="space-after">
 		<p>I invented a new word!</p>
 		<p><strong>{word}</strong>: {definition}</p>
 		<p>Invent your own word at fictionary.com.</p>
@@ -89,4 +89,6 @@
 		inset-block: 0.15em;
 		inset-inline: 0.25em;
 	}
+
+	.space-after { margin-block-end: 1em; }
 </style>
