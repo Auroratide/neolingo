@@ -8,3 +8,19 @@ CREATE TABLE private.votes (
 		FOREIGN KEY (prompt_id, word_id)
 		REFERENCES private.words(prompt_id, id)
 );
+
+CREATE OR REPLACE FUNCTION require_word_first()
+RETURNS TRIGGER AS $$
+BEGIN
+	IF NOT EXISTS (SELECT 1 FROM private.submissions WHERE person_id = new.person_id AND prompt_id = new.prompt_id) THEN
+		RAISE EXCEPTION 'You must submit a word before you can vote. SOLUTION: Refresh the page and try again.';
+	END IF;
+
+	RETURN new;
+END $$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER require_word_first
+	BEFORE INSERT OR UPDATE
+	ON private.votes
+	FOR EACH ROW
+	EXECUTE FUNCTION require_word_first();

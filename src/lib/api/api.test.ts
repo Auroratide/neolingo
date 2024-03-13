@@ -312,7 +312,7 @@ describe("api", withDb((db) => {
 				const promise = Api.submitVote(missingId, promptId, word.id)
 
 				// then
-				await expect(promise).rejects.toThrow(/failed to submit vote/i)
+				await expect(promise).rejects.toThrow()
 			})
 
 			test("prompt id is not known", async () => {
@@ -323,7 +323,7 @@ describe("api", withDb((db) => {
 				const promise = Api.submitVote(marisa, missingPromptId, word.id)
 
 				// then
-				await expect(promise).rejects.toThrow(/could not find prompt/i)
+				await expect(promise).rejects.toThrow()
 			})
 
 			test("word id is not known", async () => {
@@ -334,12 +334,13 @@ describe("api", withDb((db) => {
 				const promise = Api.submitVote(marisa, promptId, missingWordId)
 
 				// then
-				await expect(promise).rejects.toThrow(/could not find word/i)
+				await expect(promise).rejects.toThrow()
 			})
 
 			test("word id is for a different prompt", async () => {
 				// given
 				const todaysPromptId = promptId
+				await Api.submitWord(marisa, todaysPromptId, "dolls")
 
 				const olderPromptId = await db.query(`
 					INSERT INTO private.prompts (day, text)
@@ -375,6 +376,14 @@ describe("api", withDb((db) => {
 
 				// then
 				await expect(promise).rejects.toThrow(/voting period for this prompt has already passed/i)
+			})
+
+			test("vote submitted before word is", async () => {
+				// when
+				const promise = Api.submitVote(marisa, promptId, word.id)
+
+				// then
+				await expect(promise).rejects.toThrow(/must submit a word before you can vote/i)
 			})
 		})
 	})
