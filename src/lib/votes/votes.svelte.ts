@@ -55,12 +55,14 @@ async function submitVote(id: SubmittedWordId) {
 
 async function replaceWord(index: number) {
 	const currentAllWords = await allWords
-	const wordToReplace = votableWords[index]
-	const wordsToChooseFrom = currentAllWords.filter((word) => word.id !== wordToReplace.id)
+	const votableWordIds = votableWords.map((word) => word.id)
+	const wordsToChooseFrom = currentAllWords.filter((word) => !votableWordIds.includes(word.id))
 
 	const newWord = chooseWords(wordsToChooseFrom, 1)[0]
 
-	votableWords = votableWords.toSpliced(index, 1, newWord)
+	if (newWord != null) {
+		votableWords = votableWords.toSpliced(index, 1, newWord)
+	}
 }
 
 export default {
