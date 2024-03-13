@@ -37,6 +37,8 @@ body {
 	color: var(--color-u);
 }
 
+input { font-family: "Crimson Text", serif; }
+
 h1 { font-size: 3em; }
 h2 { font-size: 2em; }
 p { line-height: 1.15; }

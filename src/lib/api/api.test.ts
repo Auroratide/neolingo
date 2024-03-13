@@ -18,23 +18,21 @@ describe("api", withDb((db) => {
 		const now = new Date()
 		const today = now.toISOString().split("T")[0]
 		const expectedText = "PROMPT FROM TEST"
-		const expectedLetters = 2
 
 		await db.query(`
 			INSERT INTO private.prompts
-				(day, text, letters)
+				(day, text)
 			VALUES
-				($1, $2, $3)
+				($1, $2)
 			ON CONFLICT (day)
-			DO UPDATE SET text = EXCLUDED.text, letters = EXCLUDED.letters
-		`, [today, expectedText, expectedLetters])
+			DO UPDATE SET text = EXCLUDED.text
+		`, [today, expectedText])
 
 		// when
 		const result = await Api.getPromptForToday()
 
 		// then
 		expect(result.text).toEqual(expectedText)
-		expect(result.letters).toEqual(expectedLetters)
 	})
 
 	describe("submitWord", () => {
@@ -42,30 +40,28 @@ describe("api", withDb((db) => {
 			const now = new Date()
 			const today = now.toISOString().split("T")[0]
 			const todayText = "PROMPT FROM TEST TODAY"
-			const todayLetters = 5
 
 			await db.query(`
 				INSERT INTO private.prompts
-					(day, text, letters)
+					(day, text)
 				VALUES
-					($1, $2, $3)
+					($1, $2)
 				ON CONFLICT (day)
-				DO UPDATE SET text = EXCLUDED.text, letters = EXCLUDED.letters
-			`, [today, todayText, todayLetters])
+				DO UPDATE SET text = EXCLUDED.text
+			`, [today, todayText])
 
 			const yesterNow = new Date(Date.now() - 1000 * 60 * 60 * 24)
 			const yesterday = yesterNow.toISOString().split("T")[0]
 			const yesterText = "PROMPT FROM TEST YESTERDAY"
-			const yesterLetters = 6
 
 			await db.query(`
 				INSERT INTO private.prompts
-					(day, text, letters)
+					(day, text)
 				VALUES
-					($1, $2, $3)
+					($1, $2)
 				ON CONFLICT (day)
-				DO UPDATE SET text = EXCLUDED.text, letters = EXCLUDED.letters
-			`, [yesterday, yesterText, yesterLetters])
+				DO UPDATE SET text = EXCLUDED.text
+			`, [yesterday, yesterText])
 		})
 
 		test("submitting a valid word for the first time", async () => {
@@ -73,7 +69,7 @@ describe("api", withDb((db) => {
 			const myId = await Api.generateMyId()
 			const prompt = await Api.getPromptForToday()
 
-			const myWord = Array.from({ length: prompt.letters }).fill("a").join("")
+			const myWord = "aaaaa"
 
 			// when
 			await Api.submitWord(myId, prompt.id, myWord)
@@ -92,8 +88,8 @@ describe("api", withDb((db) => {
 			const myId = await Api.generateMyId()
 			const prompt = await Api.getPromptForToday()
 
-			const myFirstWord = Array.from({ length: prompt.letters }).fill("a").join("")
-			const mySecondWord = Array.from({ length: prompt.letters }).fill("z").join("")
+			const myFirstWord = "aaaaa"
+			const mySecondWord = "zzzzz"
 
 			// when
 			await Api.submitWord(myId, prompt.id, myFirstWord)
@@ -113,13 +109,19 @@ describe("api", withDb((db) => {
 			const myId = await Api.generateMyId()
 			const prompt = await Api.getPromptForToday()
 
-			const tooLong = Array.from({ length: prompt.letters + 1 }).fill("a").join("")
-
 			// when
-			const promise = Api.submitWord(myId, prompt.id, tooLong)
+			const tooLong = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+			let promise = Api.submitWord(myId, prompt.id, tooLong)
 
 			// then
-			await expect(promise).rejects.toThrow(/word must be exactly \d+ letters long/i)
+			await expect(promise).rejects.toThrow(/word must be between \d+ and \d+ letters long/i)
+
+			// when
+			const tooShort = "a"
+			promise = Api.submitWord(myId, prompt.id, tooShort)
+
+			// then
+			await expect(promise).rejects.toThrow(/word must be between \d+ and \d+ letters long/i)
 		})
 
 		test("word has non-letters", async () => {
@@ -127,7 +129,7 @@ describe("api", withDb((db) => {
 			const myId = await Api.generateMyId()
 			const prompt = await Api.getPromptForToday()
 
-			const nonLetters = Array.from({ length: prompt.letters }).fill("1").join("")
+			const nonLetters = "11111"
 
 			// when
 			const promise = Api.submitWord(myId, prompt.id, nonLetters)
@@ -141,7 +143,7 @@ describe("api", withDb((db) => {
 			const missingId = "bc39e28b-0012-4c24-8a1e-233b5ff19c11"
 			const prompt = await Api.getPromptForToday()
 
-			const myWord = Array.from({ length: prompt.letters }).fill("a").join("")
+			const myWord = "aaaaa"
 
 			// when
 			const promise = Api.submitWord(missingId, prompt.id, myWord)
@@ -153,10 +155,9 @@ describe("api", withDb((db) => {
 		test("prompt id is not known", async () => {
 			// given
 			const myId = await Api.generateMyId()
-			const prompt = await Api.getPromptForToday()
 			const missingPromptId = "-1"
 
-			const tooLong = Array.from({ length: prompt.letters }).fill("a").join("")
+			const tooLong = "aaaaa"
 
 			// when
 			const promise = Api.submitWord(myId, missingPromptId, tooLong)
@@ -169,13 +170,13 @@ describe("api", withDb((db) => {
 			// given
 			const yesterNow = new Date(Date.now() - 1000 * 60 * 60 * 24)
 			const yesterday = yesterNow.toISOString().split("T")[0]
-			const [promptId, letters] = await db.query(`
-				SELECT id, letters FROM private.prompts WHERE day = $1
-			`, [yesterday]).then(result => [result.rows[0].id, result.rows[0].letters])
+			const promptId = await db.query(`
+				SELECT id FROM private.prompts WHERE day = $1
+			`, [yesterday]).then(result => result.rows[0].id)
 
 			const myId = await Api.generateMyId()
 
-			const myWord = Array.from({ length: letters }).fill("a").join("")
+			const myWord = "aaaaa"
 
 			// when
 			const promise = Api.submitWord(myId, promptId, myWord)
@@ -195,16 +196,15 @@ describe("api", withDb((db) => {
 			const now = new Date()
 			const today = now.toISOString().split("T")[0]
 			const todayText = "PROMPT FROM TEST TODAY"
-			const todayLetters = 5
 
 			await db.query(`
 				INSERT INTO private.prompts
-					(day, text, letters)
+					(day, text)
 				VALUES
-					($1, $2, $3)
+					($1, $2)
 				ON CONFLICT (day)
-				DO UPDATE SET text = EXCLUDED.text, letters = EXCLUDED.letters
-			`, [today, todayText, todayLetters])
+				DO UPDATE SET text = EXCLUDED.text
+			`, [today, todayText])
 
 			promptId = await db.query(`
 				SELECT id FROM private.prompts WHERE day = $1;
@@ -342,8 +342,8 @@ describe("api", withDb((db) => {
 				const todaysPromptId = promptId
 
 				const olderPromptId = await db.query(`
-					INSERT INTO private.prompts (day, text, letters)
-					VALUES ('2024-02-20', 'older prompt', 6)
+					INSERT INTO private.prompts (day, text)
+					VALUES ('2024-02-20', 'older prompt')
 					RETURNING id;
 				`).then(result => result.rows[0].id)
 
@@ -361,8 +361,8 @@ describe("api", withDb((db) => {
 			test("prompt is no longer applicable for today", async () => {
 				// given
 				const olderPromptId = await db.query(`
-					INSERT INTO private.prompts (day, text, letters)
-					VALUES ('2024-02-24', 'older prompt', 6)
+					INSERT INTO private.prompts (day, text)
+					VALUES ('2024-02-24', 'older prompt')
 					RETURNING id;
 				`).then(result => result.rows[0].id)
 
@@ -383,10 +383,10 @@ describe("api", withDb((db) => {
 		beforeEach(async () => {
 			const promptIds = await db.query(`
 				INSERT INTO private.prompts
-					(day, text, letters)
+					(day, text)
 				VALUES
-					('2024-02-23', 'older prompt', 6),
-					('2024-02-24', 'old prompt', 6);
+					('2024-02-23', 'older prompt'),
+					('2024-02-24', 'old prompt');
 			`).then(result => result.rows.map((it) => it.id))
 
 			await db.query(`

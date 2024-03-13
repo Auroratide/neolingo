@@ -1,17 +1,17 @@
 INSERT INTO private.prompts
-	(day, text, letters)
+	(day, text)
 VALUES
-	(CURRENT_DATE - 2, 'optical illusions induced by refraction through water', 7),
-	(CURRENT_DATE - 1, 'the feeling of peace and comfort one may get when surrounded by nature', 8),
-	(CURRENT_DATE, 'a hike or journey taken during the transition from night to dawn', 6),
-	(CURRENT_DATE + 1, 'optical illusions induced by refraction through water', 7),
-	(CURRENT_DATE + 2, 'the feeling of peace and comfort one may get when surrounded by nature', 8),
-	(CURRENT_DATE + 3, 'a hike or journey taken during the transition from night to dawn', 6),
-	(CURRENT_DATE + 4, 'optical illusions induced by refraction through water', 7),
-	(CURRENT_DATE + 5, 'the feeling of peace and comfort one may get when surrounded by nature', 8),
-	(CURRENT_DATE + 6, 'a hike or journey taken during the transition from night to dawn', 6),
-	(CURRENT_DATE + 7, 'optical illusions induced by refraction through water', 7),
-	(CURRENT_DATE + 8, 'the feeling of peace and comfort one may get when surrounded by nature', 8);
+	(CURRENT_DATE - 2, 'optical illusions induced by refraction through water'),
+	(CURRENT_DATE - 1, 'the feeling of peace and comfort one may get when surrounded by nature'),
+	(CURRENT_DATE, 'a hike or journey taken during the transition from night to dawn'),
+	(CURRENT_DATE + 1, 'optical illusions induced by refraction through water'),
+	(CURRENT_DATE + 2, 'the feeling of peace and comfort one may get when surrounded by nature'),
+	(CURRENT_DATE + 3, 'a hike or journey taken during the transition from night to dawn'),
+	(CURRENT_DATE + 4, 'optical illusions induced by refraction through water'),
+	(CURRENT_DATE + 5, 'the feeling of peace and comfort one may get when surrounded by nature'),
+	(CURRENT_DATE + 6, 'a hike or journey taken during the transition from night to dawn'),
+	(CURRENT_DATE + 7, 'optical illusions induced by refraction through water'),
+	(CURRENT_DATE + 8, 'the feeling of peace and comfort one may get when surrounded by nature');
 
 DO $$
 	DECLARE alice uuid;

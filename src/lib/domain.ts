@@ -4,7 +4,6 @@ export type PromptId = string
 export type Prompt = {
 	readonly id: PromptId
 	readonly text: string
-	readonly letters: number
 }
 
 export type SubmittedWordId = string

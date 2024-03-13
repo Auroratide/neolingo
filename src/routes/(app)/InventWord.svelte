@@ -1,7 +1,8 @@
 <script lang="ts">
-	import LetterByLetterInput from "$lib/prompt/LetterByLetterInput.svelte"
+	import WordInput from "$lib/prompt/WordInput.svelte"
 	import prompt from "$lib/prompt/prompt.svelte"
 	import FormCard from "$lib/design-system/FormCard.svelte"
+	import { MIN_LENGTH } from "$lib/prompt/requirements"
 
 	let currentWord = $state(prompt.myWord)
 
@@ -27,13 +28,12 @@
 		<p class="balanced">
 			<strong class="slightly-larger quoted">{content?.text ?? "this is placeholder text where the prompt text will go after it all loads into place"}</strong>
 		</p>
-		<LetterByLetterInput
+		<WordInput
 			id="word-input"
-			letters={content?.letters == null ? 1 : content.letters}
 			label="Your word"
 			bind:value={currentWord}
 		/>
-		<button type="submit" class="slightly-larger" disabled={currentWord.length !== content?.letters}>
+		<button type="submit" class="slightly-larger" disabled={currentWord.length < MIN_LENGTH}>
 			Submit Word
 		</button>
 	{/snippet}

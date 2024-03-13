@@ -28,16 +28,15 @@ export function withDb(tests: (db: TestDb) => void) {
 			query: pg.query.bind(pg),
 			async setupPrompt({
 				text = "some prompt",
-				letters = 5,
 				day = new Date(),
 			} = {}) {
 				const id = await pg.query(`
-					INSERT INTO private.prompts (text, letters, day)
-					VALUES ($1, $2, $3)
+					INSERT INTO private.prompts (text, day)
+					VALUES ($1, $2)
 					RETURNING id
-				`, [text, letters, day]).then((result) => result.rows[0].id)
+				`, [text, day]).then((result) => result.rows[0].id)
 
-				return { id, text, letters, day }
+				return { id, text, day }
 			},
 		})
 	}

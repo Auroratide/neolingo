@@ -9,13 +9,9 @@ CREATE TABLE private.submissions (
 
 CREATE OR REPLACE FUNCTION match_required_letters()
 RETURNS TRIGGER AS $$
-DECLARE
-	required_letters INT;
 BEGIN
-	SELECT letters INTO required_letters FROM private.prompts WHERE id = new.prompt_id;
-	
-	IF LENGTH(new.word) <> required_letters THEN
-		RAISE EXCEPTION 'Word must be exactly % letters long.', required_letters;
+	IF LENGTH(new.word) < 3 OR LENGTH(new.word) > 15 THEN
+		RAISE EXCEPTION 'Word must be between 3 and 15 letters long.';
 	END IF;
 
 	RETURN new;
