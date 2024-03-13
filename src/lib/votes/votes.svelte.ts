@@ -45,6 +45,12 @@ $effect.root(() => {
 			myVote = localStorage.getItem(MY_VOTE) ?? undefined
 		}
 	})
+
+	$effect(() => {
+		if (votableWords.map((it) => it.text).includes(prompt.myWord)) {
+			replaceWord(votableWords.findIndex((it) => it.text === prompt.myWord))
+		}
+	})
 })
 
 async function submitVote(id: SubmittedWordId) {
@@ -56,7 +62,9 @@ async function submitVote(id: SubmittedWordId) {
 async function replaceWord(index: number) {
 	const currentAllWords = await allWords
 	const votableWordIds = votableWords.map((word) => word.id)
-	const wordsToChooseFrom = currentAllWords.filter((word) => !votableWordIds.includes(word.id))
+	const wordsToChooseFrom = currentAllWords.filter((word) =>
+		!votableWordIds.includes(word.id) && word.text !== prompt.myWord,
+	)
 
 	const newWord = chooseWords(wordsToChooseFrom, 1)[0]
 
