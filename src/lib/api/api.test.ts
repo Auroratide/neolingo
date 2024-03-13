@@ -83,7 +83,7 @@ describe("api", withDb((db) => {
 			expect(result.rows[0].word).toEqual(myWord)
 		})
 
-		test("resubmitting a different word for the same prompt", async () => {
+		test("trying to submit a different word for the same prompt", async () => {
 			// given
 			const myId = await Api.generateMyId()
 			const prompt = await Api.getPromptForToday()
@@ -93,15 +93,18 @@ describe("api", withDb((db) => {
 
 			// when
 			await Api.submitWord(myId, prompt.id, myFirstWord)
-			await Api.submitWord(myId, prompt.id, mySecondWord)
+			const promise = Api.submitWord(myId, prompt.id, mySecondWord)
 
 			// then
+			await expect(promise).rejects.toThrow(/already submitted a word/i)
+
+			// and
 			const result = await db.query(`
 				SELECT * FROM private.submissions WHERE person_id = $1 AND prompt_id = $2
 			`, [myId, prompt.id])
 
 			expect(result.rows.length).toEqual(1)
-			expect(result.rows[0].word).toEqual(mySecondWord)
+			expect(result.rows[0].word).toEqual(myFirstWord)
 		})
 
 		test("word has wrong number of letters", async () => {

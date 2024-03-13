@@ -5,10 +5,12 @@
 		id: string
 		label: string
 		value?: string
+		disabled?: boolean
 	}; let {
 		id,
 		label,
 		value = "",
+		disabled = false,
 	} = $props<Props>()
 
 	const forceLowercase = (e: Event) => {
@@ -35,6 +37,8 @@
 		title="between {MIN_LENGTH} and {MAX_LENGTH} letters"
 		autocomplete="off"
 		spellcheck="false"
+		placeholder="your word here"
+		{disabled}
 	/>
 </div>
 
@@ -58,6 +62,15 @@
 
 	.fill-in-the-blank:focus {
 		border-block-end-color: var(--color-u);
+	}
+
+	.fill-in-the-blank:disabled {
+		border-color: var(--color-a);
+	}
+
+	.fill-in-the-blank::placeholder {
+		color: var(--color-o);
+		opacity: 0.5;
 	}
 
 	.lowercase { text-transform: lowercase; }

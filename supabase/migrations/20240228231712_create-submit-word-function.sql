@@ -14,8 +14,6 @@ BEGIN
 		(person_id, prompt_id, word)
 	VALUES
 		(_my_id, _prompt_id, _word)
-	ON CONFLICT (person_id, prompt_id)
-	DO UPDATE SET word = _word
 	RETURNING id INTO ret_id;
 
 	RETURN ret_id;

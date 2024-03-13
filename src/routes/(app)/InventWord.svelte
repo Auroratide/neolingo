@@ -15,6 +15,8 @@
 	const onsubmit = async (form: FormData) => {
 		await prompt.submitWord(form.get("word-input") as string)
 	}
+
+	const alreadySubmitted = $derived(prompt.myWord != null && prompt.myWord !== "")
 </script>
 
 <FormCard
@@ -39,10 +41,15 @@
 			id="word-input"
 			label="Your word"
 			bind:value={currentWord}
+			disabled={alreadySubmitted}
 		/>
-		<button type="submit" class="slightly-larger" disabled={currentWord.length < MIN_LENGTH}>
-			Submit Word
-		</button>
+		{#if alreadySubmitted}
+			<p class="center slightly-larger button-like-padding">Thanks for your submission!</p>
+		{:else}
+			<button type="submit" class="slightly-larger" disabled={currentWord.length < MIN_LENGTH || alreadySubmitted}>
+				Submit Word
+			</button>
+		{/if}
 	{/snippet}
 </FormCard>
 
@@ -64,4 +71,6 @@
 			padding-inline-start: 0.125em;
 		}
 	}
+
+	.button-like-padding { padding-block: 0.375em; }
 </style>

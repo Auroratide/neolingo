@@ -10,6 +10,12 @@ export function raiseError(error: PostgrestError | null, defaultMessage: string 
 		}
 	}
 
+	if (error?.code === PostgresErrorCode.UniqueViolation) {
+		if (error.message.includes("submissions_person_id_prompt_id_key")) {
+			throw new SolveableApiError("You have already submitted a word for today!", "Return tomorrow to invent a new word.", error)
+		}
+	}
+
 	if (error?.code === PostgresErrorCode.ForeignKeyViolation) {
 		if (error.message.includes("word_matches_prompt")) {
 			throw new SolveableApiError("Voted word was for a different prompt.", "Try refreshing the page.", error)
@@ -46,5 +52,6 @@ export class SolveableApiError extends ApiError {
 const PostgresErrorCode = {
 	RaiseException: "P0001",
 	ForeignKeyViolation: "23503",
+	UniqueViolation: "23505",
 	CheckViolation: "23514",
 } as const
