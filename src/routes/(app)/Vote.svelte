@@ -1,8 +1,13 @@
 <script lang="ts">
 	import WordVoter from "$lib/votes/WordVoter.svelte"
 	import votes, { WORDS_TO_CHOOSE } from "$lib/votes"
-
 	import FormCard from "$lib/design-system/FormCard.svelte"
+
+	type Props = {
+		focus?: boolean
+	}; const {
+		focus = false,
+	} = $props<Props>()
 
 	let currentVote = $state(votes.myVote)
 
@@ -23,6 +28,7 @@
 
 <FormCard
 	id="vote-section"
+	{focus}
 	title="Vote"
 	content={votes.allWords}
 	waiting-label="Finding words"

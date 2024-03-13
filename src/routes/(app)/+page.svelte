@@ -6,6 +6,9 @@
 	import NextSteps from "./NextSteps.svelte"
 	import prompt from "$lib/prompt/prompt.svelte"
 	import votes from "$lib/votes"
+
+	const done = (s: string | undefined): 0 | 1 => s ? 1 : 0
+	const step = $derived(done(prompt.myWord) + done(votes.myVote))
 </script>
 
 <svelte:head>
@@ -13,11 +16,11 @@
 </svelte:head>
 <Stack size="3em">
 	<Introduction />
-	<InventWord />
-	{#if prompt.myWord}
-		<Vote />
+	<InventWord focus={step < 1} />
+	{#if step > 0}
+		<Vote focus={step < 2} />
 	{/if}
-	{#if votes.myVote}
+	{#if step > 1}
 		<NextSteps />
 	{/if}
 </Stack>

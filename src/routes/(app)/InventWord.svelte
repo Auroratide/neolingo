@@ -4,6 +4,12 @@
 	import FormCard from "$lib/design-system/FormCard.svelte"
 	import { MIN_LENGTH } from "$lib/prompt/requirements"
 
+	type Props = {
+		focus?: boolean
+	}; const {
+		focus = false,
+	} = $props<Props>()
+
 	let currentWord = $state(prompt.myWord)
 
 	const onsubmit = async (form: FormData) => {
@@ -13,6 +19,7 @@
 
 <FormCard
 	id="invent-a-word-section"
+	{focus}
 	title="Invent a Word"
 	content={prompt.content}
 	waiting-label="Creating a prompt"

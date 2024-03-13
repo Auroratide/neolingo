@@ -85,7 +85,7 @@
 			inset-inline: 66% 0.5em;
 		}
 
-		&:focus-within, &.focus {
+		&.focus {
 			border-color: var(--color-o);
 
 			&::before {

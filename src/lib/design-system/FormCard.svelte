@@ -17,6 +17,7 @@
 		"waiting-label": string,
 		"submitted-label": string,
 		onsubmit: (form: FormData) => Promise<void>,
+		focus?: boolean,
 	}; const {
 		id,
 		transitionTo,
@@ -26,6 +27,7 @@
 		"waiting-label": waitingLabel,
 		"submitted-label": submittedLabel,
 		onsubmit: submitData,
+		focus = false,
 	} = $props<Props>()
 
 	let submitting = $state(false)
@@ -73,7 +75,7 @@
 	</div>
 {/snippet}
 
-<FocusCard {id} error={contentFailed} transition>
+<FocusCard {id} {focus} error={contentFailed} transition>
 	<div class="all-text-centered overlay-container">
 		<h2>{title}</h2>
 		{#await content}
