@@ -16,6 +16,7 @@ module.exports = {
 		"svelte/no-at-html-tags": "off",
 		"no-console": ["error"],
 		"no-undef": ["off"], // false positive with svelte generics; rely on typescript instead
+		"svelte/valid-compile": "off", // broken: https://github.com/sveltejs/eslint-plugin-svelte/issues/652
 	},
 	parserOptions: {
 		sourceType: "module",
