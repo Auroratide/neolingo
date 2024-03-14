@@ -16,7 +16,9 @@
 </svelte:head>
 <Stack size="3em">
 	<Introduction />
-	<InventWord focus={step < 1} />
+	{#if true} <!-- this looks dumb, but it's to make the transition not trigger on navigation -->
+		<InventWord focus={step < 1} />
+	{/if}
 	{#if step > 0}
 		<Vote focus={step < 2} />
 	{/if}
