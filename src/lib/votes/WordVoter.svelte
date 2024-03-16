@@ -52,7 +52,7 @@
 	<legend>Which word do you like best?</legend>
 	<div class="gridded-radios larger">
 		{#each words as word, i (word.id)}
-			{@render wordoption(word, i)}
+			{@render wordoption(word, i, true)}
 		{/each}
 		<label for="{id}-word-search" class="span-all smaller space-before" style:--row="{words.length}">Or, find a specific word</label>
 		<div class="span-all row smaller" style:--row="{words.length + 1}">
@@ -74,17 +74,17 @@
 		{:else if searchState === "my-word"}
 			{@render transitioningPhrase("Hey, that's your word!", words.length + 2)}
 		{:else if specificWord != null}
-			{@render wordoption(specificWord, words.length + 2)}
+			{@render wordoption(specificWord, words.length + 2, false)}
 		{:else}
 			{@render transitioningPhrase("", words.length + 2)}
 		{/if}
 	</div>
 </fieldset>
 
-{#snippet wordoption(word: SubmittedWord, i: number)}
+{#snippet wordoption(word: SubmittedWord, i: number, allowReplace: boolean)}
 	<!-- grid areas help the transition to overlap correctly -->
 	<div style:grid-area="{i + 1} / 1 / {i + 2} / 2"><!-- spacing --></div>
-	<button class="x-button" type="button" onclick={() => onreplaceword(i)} title="Replace {word.text}" style:grid-area="{i + 1} / 2 / {i + 2} / 3">
+	<button class="x-button" type="button" onclick={() => onreplaceword(i)} title="Replace {word.text}" style:grid-area="{i + 1} / 2 / {i + 2} / 3" style:visibility="{allowReplace ? "visible" : "hidden"}">
 		<span class="{VisuallyHidden}">Replace {word.text}</span>
 		<span aria-hidden="true">&times;</span>
 	</button>
