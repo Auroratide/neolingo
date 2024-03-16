@@ -37,8 +37,6 @@ body {
 	color: var(--color-u);
 }
 
-input { font-family: "Crimson Text", serif; }
-
 h1 { font-size: 3em; }
 h2 { font-size: 2em; }
 p { line-height: 1.15; }
@@ -123,6 +121,32 @@ button, .button {
 :is(button, input, a):focus-visible {
 	outline: 0.125em dotted var(--color-o);
 	outline-offset: 0.125em;
+}
+
+input[type="text"], input[type="search"] {
+	font-family: "Crimson Text", serif;
+	font-size: 1em;
+	background: var(--color-i);
+	color: var(--color-u);
+	border: unset;
+	border-block-end: 0.125em solid var(--color-o);
+	padding: 0.125em 0.5em;
+
+	&::placeholder {
+		color: var(--color-o);
+		opacity: 0.5;
+	}
+
+	&:focus {
+		border-color: var(--color-u);
+		background: transparent;
+	}
+
+	/* Figure this out later */
+	/* &::-webkit-search-cancel-button {
+		background: var(--color-o);
+		color: var(--color-o);
+	} */
 }
 
 dfn {

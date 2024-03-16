@@ -4,6 +4,7 @@ import prompt from "$lib/prompt/prompt.svelte"
 import day from "$lib/day.svelte"
 import me from "$lib/me.svelte"
 import { chooseWords } from "./choose-words"
+import { storedState } from "$lib/stored-state"
 
 export const WORDS_TO_CHOOSE = 3
 
@@ -11,57 +12,53 @@ export type VotesRune = {
 	readonly allWords: Promise<readonly SubmittedWord[]>
 	readonly votableWords: readonly SubmittedWord[]
 	readonly myVote: SubmittedWordId | undefined
+	readonly specificWord: SubmittedWord | undefined
 	submitVote: (wordId: SubmittedWordId) => Promise<void>
 	replaceWord: (index: number) => Promise<void>
+	findSpecificWord: (text: string) => Promise<SubmittedWord | undefined>
 }
 
 const GENERATED = "votes:generated"
 const VOTABLE = "votes:votable"
 const MY_VOTE = "votes:my-vote"
+const SPECIFIC_WORD = "votes:specific-word"
 
 let allWords = $state<Promise<readonly SubmittedWord[]>>(new Promise(() => {}))
-let votableWords = $state<readonly SubmittedWord[]>([])
-let myVote = $state<SubmittedWordId | undefined>(undefined)
+const votableWords = storedState<readonly SubmittedWord[]>(VOTABLE, [])
+const myVote = storedState<SubmittedWordId | undefined>(MY_VOTE, undefined)
+const specificWord = storedState<SubmittedWord | undefined>(SPECIFIC_WORD, undefined)
 
 $effect.root(() => {
 	$effect(() => {
 		const lastGenerated = new Date(localStorage.getItem(GENERATED) ?? 0)
 
 		if (!day.isToday(lastGenerated)) {
-			localStorage.removeItem(MY_VOTE)
-			myVote = undefined
+			myVote.value = undefined
+			specificWord.value = undefined
 
-			allWords = Api.getVotableWords().then((newWords) => {
-				localStorage.setItem(GENERATED, new Date().toISOString())
-
-				votableWords = chooseWords(newWords, WORDS_TO_CHOOSE)
-				localStorage.setItem(VOTABLE, JSON.stringify(votableWords))
-					
-				return newWords
-			})
+			allWords = Api.getVotableWords().then(reset)
 		} else {
 			allWords = Api.getVotableWords()
-			votableWords = JSON.parse(localStorage.getItem(VOTABLE) ?? "[]")
-			myVote = localStorage.getItem(MY_VOTE) ?? undefined
-		}
-	})
-
-	$effect(() => {
-		if (votableWords.map((it) => it.text).includes(prompt.myWord)) {
-			replaceWord(votableWords.findIndex((it) => it.text === prompt.myWord))
 		}
 	})
 })
 
+async function reset(newWords: readonly SubmittedWord[]) {
+	localStorage.setItem(GENERATED, new Date().toISOString())
+
+	votableWords.value = chooseWords(newWords, WORDS_TO_CHOOSE)
+
+	return newWords
+}
+
 async function submitVote(id: SubmittedWordId) {
 	await Api.submitVote(await me.id, (await prompt.content).id, id)
-	myVote = id
-	localStorage.setItem(MY_VOTE, id)
+	myVote.value = id
 }
 
 async function replaceWord(index: number) {
 	const currentAllWords = await allWords
-	const votableWordIds = votableWords.map((word) => word.id)
+	const votableWordIds = votableWords.value.map((word) => word.id)
 	const wordsToChooseFrom = currentAllWords.filter((word) =>
 		!votableWordIds.includes(word.id) && word.text !== prompt.myWord,
 	)
@@ -69,14 +66,24 @@ async function replaceWord(index: number) {
 	const newWord = chooseWords(wordsToChooseFrom, 1)[0]
 
 	if (newWord != null) {
-		votableWords = votableWords.toSpliced(index, 1, newWord)
+		votableWords.value = votableWords.value.toSpliced(index, 1, newWord)
 	}
+}
+
+async function findSpecificWord(text: string): Promise<SubmittedWord | undefined> {
+	const currentAllWords = await allWords
+	const found = currentAllWords.find((word) => word.text === text)
+	specificWord.value = found
+
+	return found
 }
 
 export default {
 	get allWords() { return allWords },
-	get votableWords() { return votableWords },
-	get myVote() { return myVote },
+	get votableWords() { return votableWords.value },
+	get myVote() { return myVote.value },
+	get specificWord() { return specificWord.value },
 	submitVote,
 	replaceWord,
+	findSpecificWord,
 } satisfies VotesRune

@@ -2,6 +2,8 @@
 	import WordVoter from "$lib/votes/WordVoter.svelte"
 	import votes, { WORDS_TO_CHOOSE } from "$lib/votes"
 	import FormCard from "$lib/design-system/FormCard.svelte"
+	import prompt from "$lib/prompt"
+	import Stack from "$lib/design-system/Stack.svelte"
 
 	type Props = {
 		focus?: boolean
@@ -22,8 +24,15 @@
 	}))
 
 	const onreplaceword = (index: number) => {
+		const wordToReplace = votes.votableWords[index]
+		if (wordToReplace.id === currentVote) {
+			currentVote = undefined
+		}
+
 		votes.replaceWord(index)
 	}
+
+	const submittedThisWord = $derived(votes.myVote != null && votes.myVote === currentVote)
 </script>
 
 <FormCard
@@ -41,10 +50,25 @@
 >
 	{#snippet form(content)}
 		<p>Choose a favorite word that isn't your own:</p>
-		<WordVoter id="word-vote" words={content != null ? votes.votableWords : placeholder} bind:value={currentVote} {onreplaceword} />
-		<button type="submit" class="slightly-larger" disabled={currentVote == null}>
-			Submit Vote
-		</button>
+		<WordVoter
+			id="word-vote"
+			words={content != null ? votes.votableWords : placeholder}
+			bind:value={currentVote}
+			specificWord={votes.specificWord}
+			myWord={prompt.myWord}
+			{onreplaceword}
+			onsearchword={votes.findSpecificWord}
+		/>
+		{#if submittedThisWord}
+			<Stack size="0.25em">
+				<p class="center slightly-larger">Thanks for your vote!</p>
+				<p class="center">You may change your vote whenever you want.</p>
+			</Stack>
+		{:else}
+			<button type="submit" class="slightly-larger" disabled={currentVote == null}>
+				Submit Vote
+			</button>
+		{/if}
 	{/snippet}
 </FormCard>
 

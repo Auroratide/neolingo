@@ -7,41 +7,107 @@
 		id: string,
 		words: readonly SubmittedWord[],
 		value: SubmittedWordId | undefined,
+		myWord: string,
+		specificWord: SubmittedWord | undefined,
 		onreplaceword: (index: number) => void,
+		onsearchword: (search: string) => Promise<SubmittedWord | undefined>,
 	}; let {
 		id,
 		words,
 		value,
+		specificWord,
+		myWord,
 		onreplaceword,
+		onsearchword,
 	} = $props<Props>()
+
+	type SearchState = "idle" | "searching" | "not-found" | "my-word" | "found"
+	let currentSearch = $state(specificWord?.text ?? "")
+	let searchState = $state<SearchState>(specificWord?.text === myWord ? "my-word" : "idle")
+	async function onSearch(e: Event) {
+		if (currentSearch === specificWord?.text) {
+			return // continue form submission
+		}
+
+		e.stopPropagation()
+		e.preventDefault()
+
+		if (currentSearch === "") {
+			searchState = "idle"
+			return
+		}
+
+		searchState = "searching"
+		const result = await onsearchword(currentSearch)
+		searchState = result == null ? "not-found" :
+			result.text === myWord ? "my-word" : "found"
+
+		if (searchState === "found") {
+			value = result!.id
+		}
+	}
 </script>
 
 <fieldset>
 	<legend>Which word do you like best?</legend>
 	<div class="gridded-radios larger">
 		{#each words as word, i (word.id)}
-			<!-- grid areas help the transition to overlap correctly -->
-			<div style:grid-area="{i + 1} / 1 / {i + 2} / 2"><!-- spacing --></div>
-			<button type="button" onclick={() => onreplaceword(i)} title="Replace {word.text}" style:grid-area="{i + 1} / 2 / {i + 2} / 3">
-				<span class="{VisuallyHidden}">Replace {word.text}</span>
-				<span aria-hidden="true">&times;</span>
-			</button>
-			<input
-				id="{id}-{word.id}"
-				type="radio"
-				name="{id}"
-				bind:group={value}
-				value="{word.id}"
-				required
-				class="checkmark"
-				style:grid-area="{i + 1} / 3 / {i + 2} / 4"
-			/>
-			<label for="{id}-{word.id}" in:fly={{ x: -20, duration: 120, delay: 60 }} out:fly={{ x: 20, duration: 120 }} style:grid-area="{i + 1} / 4 / {i + 2} / 5">
-				{word.text}
-			</label>
+			{@render wordoption(word, i)}
 		{/each}
+		<label for="{id}-word-search" class="span-all smaller space-before" style:--row="{words.length}">Or, find a specific word</label>
+		<div class="span-all row smaller" style:--row="{words.length + 1}">
+			<input
+				id="{id}-word-search"
+				name="{id}-word-search"
+				bind:value={currentSearch}
+				type="search"
+				placeholder="type word"
+				autocomplete="off"
+				onkeypress={(e) => e.key === "Enter" && onSearch(e)}
+			/>
+			<button type="button" class="subtle-button" onclick={onSearch}>Find</button>
+		</div>
+		{#if searchState === "searching"}
+			{@render transitioningPhrase("", words.length + 2)}
+		{:else if searchState === "not-found"}
+			{@render transitioningPhrase("We could not find this word.", words.length + 2)}
+		{:else if searchState === "my-word"}
+			{@render transitioningPhrase("Hey, that's your word!", words.length + 2)}
+		{:else if specificWord != null}
+			{@render wordoption(specificWord, words.length + 2)}
+		{:else}
+			{@render transitioningPhrase("", words.length + 2)}
+		{/if}
 	</div>
 </fieldset>
+
+{#snippet wordoption(word: SubmittedWord, i: number)}
+	<!-- grid areas help the transition to overlap correctly -->
+	<div style:grid-area="{i + 1} / 1 / {i + 2} / 2"><!-- spacing --></div>
+	<button class="x-button" type="button" onclick={() => onreplaceword(i)} title="Replace {word.text}" style:grid-area="{i + 1} / 2 / {i + 2} / 3">
+		<span class="{VisuallyHidden}">Replace {word.text}</span>
+		<span aria-hidden="true">&times;</span>
+	</button>
+	<input
+		id="{id}-{word.id}"
+		type="radio"
+		name="{id}"
+		bind:group={value}
+		value="{word.id}"
+		required
+		class="checkmark"
+		style:grid-area="{i + 1} / 3 / {i + 2} / 4"
+	/>
+	<label for="{id}-{word.id}" in:fly={{ x: -20, duration: 120, delay: 60 }} out:fly={{ x: 20, duration: 120 }} style:grid-area="{i + 1} / 4 / {i + 2} / 5">
+		{word.text}
+	</label>
+{/snippet}
+
+{#snippet transitioningPhrase(text: string, row: number)}
+	<p class="span-all smaller" style:--row="{row}" in:fly={{ x: -20, duration: 120, delay: 60 }} out:fly={{ x: 20, duration: 120 }}>
+		{text}
+	</p>
+{/snippet}
 
 <style>
 	fieldset {
@@ -50,8 +116,8 @@
 		padding-inline: 2em;
 	}
 
-	fieldset:has(input:checked) input:not(:checked),
-	fieldset:has(input:checked) input:not(:checked) + label {
+	fieldset:has(input:checked) input[type="radio"]:not(:checked),
+	fieldset:has(input:checked) input[type="radio"]:not(:checked) + label {
 		opacity: 0.667;
 	}
 
@@ -64,16 +130,21 @@
 		row-gap: 0.5em;
 		text-align: start;
 
-		button {
-			display: block;
-			width: 1.5em;
-			place-self: center start;
-			text-align: center;
-		}
-
 		input { place-self: center end; }
 
 		label { place-self: center start; }
+
+		.span-all {
+			width: 100%;
+			min-height: 1em;
+			grid-column: 1 / -1;
+			grid-row: calc(var(--row) + 1);
+			text-align: center;
+		}
+
+		.space-before {
+			margin-block-start: 1em;
+		}
 	}
 
 	.larger { font-size: 1.25em; }
@@ -152,9 +223,13 @@
 		}
 	}
 
-	button {
+	.x-button {
 		all: unset;
+		display: block;
+		width: 1.5em;
 		cursor: pointer;
+		text-align: center;
+		place-self: center start;
 		color: var(--color-o);
 
 		&:hover { color: var(--color-u); }
@@ -165,5 +240,21 @@
 		}
 
 		&::before, &::after { all: unset; }
+	}
+
+	.subtle-button {
+		border-width: 0.125em;
+		padding: 0.125em 1em;
+
+		&::before, &::after { all: unset; }
+	}
+
+	.smaller { font-size: 0.875em; }
+
+	.row {
+		display: flex;
+		flex-direction: row;
+		gap: 0.5em;
+		align-items: flex-end;
 	}
 </style>
