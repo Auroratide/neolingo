@@ -73,7 +73,8 @@ async function replaceWord(index: number) {
 async function findSpecificWord(text: string): Promise<SubmittedWord | undefined> {
 	const currentAllWords = await allWords
 	const found = currentAllWords.find((word) => word.text === text)
-	specificWord.value = found
+	if (found != null && found.text != prompt.myWord)
+		specificWord.value = found
 
 	return found
 }
