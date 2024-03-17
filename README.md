@@ -1,3 +1,3 @@
-# Fictionary
+# Neolingo
 
 under construction

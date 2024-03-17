@@ -11,7 +11,7 @@
 <Container>
 	<Stack>
 		<header>
-			<h1>Fictionary</h1>
+			<h1>Neolingo</h1>
 			<nav>
 				<ul class="simple-link-list fancy-links min-spacing">
 					<li><a href="/">Invent</a></li>

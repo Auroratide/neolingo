@@ -12,7 +12,7 @@
 	} = $props<Props>()
 
 	const text = $derived(
-		`I invented a new word!\n\n${word}: ${definition}\n\nInvent your own word at fictionary.com.`,
+		`I invented a new word!\n\n${word}: ${definition}\n\nInvent your own word at neolingo.fun.`,
 	)
 
 	let copied = $state(false)
@@ -34,7 +34,7 @@
 	<blockquote class="space-after">
 		<p>I invented a new word!</p>
 		<p><strong>{word}</strong>: {definition}</p>
-		<p>Invent your own word at fictionary.com.</p>
+		<p>Invent your own word at neolingo.fun.</p>
 	</blockquote>
 	<ul class="row-list">
 		<li>{@render xlink()}</li>

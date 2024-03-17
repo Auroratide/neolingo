@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-	<title>Fictionary</title>
+	<title>Neolingo</title>
 </svelte:head>
 <Stack size="3em">
 	<Introduction />
