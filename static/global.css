@@ -23,8 +23,15 @@
 }
 
 html {
-	background: var(--color-a);
+	background-color: var(--color-a);
+	background-image: url("/bg.png");
 	scroll-behavior: smooth;
+}
+
+@media (prefers-color-scheme: light) {
+	html {
+		background-image: none;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
