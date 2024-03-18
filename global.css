@@ -1,0 +1,190 @@
+:root {
+	--color-a: oklch(37% 0.026 156);
+	--color-e: oklch(45% 0.012 145);
+	--color-i: oklch(51% 0.018 202);
+	--color-o: oklch(80% 0.038 106); /* Has contrast on a */
+	--color-u: oklch(97% 0.021 118); /* Has contrast on a, e, i */
+	--color-y: oklch(39% 0.11 39);
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--color-a: oklch(97% 0.021 118);
+		--color-e: oklch(80% 0.038 106);
+		--color-i: oklch(51% 0.018 202);
+		--color-o: oklch(45% 0.012 145);
+		--color-u: oklch(37% 0.026 156);
+	}
+}
+
+*, *::before, *::after {
+	box-sizing: border-box;
+	margin: 0;
+}
+
+html {
+	background-color: var(--color-a);
+	background-image: url("/bg.png");
+	scroll-behavior: smooth;
+}
+
+@media (prefers-color-scheme: light) {
+	html {
+		background-image: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
+}
+
+body {
+	font-family: "Crimson Text", serif;
+	font-size: clamp(1rem, 2vw, 1.333rem);
+	color: var(--color-u);
+}
+
+h1 { font-size: 3em; }
+h2 { font-size: 2em; }
+p { line-height: 1.15; }
+
+a {
+	color: var(--color-o);
+	text-decoration: underline;
+
+	&:hover, &:focus { text-decoration: none; }
+}
+
+button, .button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	font-size: 1em;
+	border: 0.25em solid var(--color-o);
+	padding: 0.375em 1em;
+	background: transparent;
+	color: var(--color-u);
+	font-family: inherit;
+	position: relative;
+	cursor: pointer;
+	text-decoration: none;
+	transition: border-color 0.25s ease-in-out;
+
+	&::before, &::after {
+		content: "";
+		position: absolute;
+		width: 66%;
+		height: 0.125em;
+		background: var(--color-o);
+		pointer-events: none;
+		transition: all 0.25s ease-in-out;
+	}
+
+	&::before {
+		inset-block-start: 0.125em;
+		inset-inline-end: 0.25em;
+	}
+
+	&::after {
+		inset-block-end: 0.125em;
+		inset-inline-start: 0.25em;
+	}
+
+	:is(&:hover, &:focus):not(:disabled) {
+		border-color: var(--color-u);
+
+		&::before {
+			width: 0%;
+			inset-inline-end: 0em;
+			background: var(--color-u);
+		}
+	
+		&::after {
+			width: 0%;
+			inset-inline-start: 0em;
+			background: var(--color-u);
+		}
+	}
+
+	&:active:not(:disabled) {
+		transition-duration: 0s;
+		border-color: var(--color-o);
+		color: var(--color-o);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&, &::before, &::after {
+			transition-duration: 0s;
+		}
+	}
+}
+
+:is(button, input, a):focus-visible {
+	outline: 0.125em dotted var(--color-o);
+	outline-offset: 0.125em;
+}
+
+input[type="text"], input[type="search"] {
+	font-family: "Crimson Text", serif;
+	font-size: 1em;
+	background: var(--color-i);
+	color: var(--color-u);
+	border: unset;
+	border-block-end: 0.125em solid var(--color-o);
+	padding: 0.125em 0.5em;
+
+	&::placeholder {
+		color: var(--color-o);
+		opacity: 0.5;
+	}
+
+	&:focus {
+		border-color: var(--color-u);
+		background: transparent;
+	}
+
+	/* Figure this out later */
+	/* &::-webkit-search-cancel-button {
+		background: var(--color-o);
+		color: var(--color-o);
+	} */
+}
+
+dfn {
+	font-style: normal;
+	font-weight: bold;
+}
+
+blockquote {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+	border: 0.25em solid var(--color-a);
+	background: var(--color-i);
+	padding: 1em 1.5em;
+	position: relative;
+
+	&::before, &::after {
+		content: "";
+		position: absolute;
+		width: 0.25em;
+		background: var(--color-a);
+		pointer-events: none;
+	}
+
+	&::before {
+		inset-block: 0.75em;
+		inset-inline-start: 0.5em;
+	}
+
+	&::after {
+		inset-block: 0.75em;
+		inset-inline-end: 0.5em;
+	}
+}
