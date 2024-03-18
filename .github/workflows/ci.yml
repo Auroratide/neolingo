@@ -12,6 +12,8 @@ jobs:
     env:
       ENV: prod
       PUBLIC_ENABLED: false
+      PUBLIC_SUPABASE_URL: ""
+      PUBLIC_SUPABASE_KEY: ""
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
