@@ -42,5 +42,9 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/supabase-js": "^2.39.7"
+	},
+	"packageManager": "pnpm@8.15.1",
+	"engines": {
+		"pnpm": "^8.0.0"
 	}
 }
