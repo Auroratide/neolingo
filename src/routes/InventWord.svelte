@@ -3,8 +3,8 @@
 	import prompt from "$lib/prompt/prompt.svelte"
 	import FormCard from "$lib/design-system/FormCard.svelte"
 	import { MIN_LENGTH } from "$lib/prompt/requirements"
-	import Turnstile from "$lib/Turnstile.svelte"
-	import me from "$lib/me.svelte"
+	import Turnstile from "$lib/me/Turnstile.svelte"
+	import me from "$lib/me/me.svelte"
 	import { slide } from "svelte/transition"
 
 	type Props = {

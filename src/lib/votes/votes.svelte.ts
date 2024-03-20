@@ -2,7 +2,7 @@ import * as Api from "../api"
 import type { SubmittedWord, SubmittedWordId } from "$lib/domain"
 import prompt from "$lib/prompt/prompt.svelte"
 import day from "$lib/day.svelte"
-import me from "$lib/me.svelte"
+import me from "$lib/me/me.svelte"
 import { chooseWords } from "./choose-words"
 import { storedState } from "$lib/stored-state"
 

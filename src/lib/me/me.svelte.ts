@@ -1,6 +1,6 @@
-import * as Api from "./api"
-import type { MyId } from "./domain"
-import { storedState } from "./stored-state"
+import * as Api from "$lib/api"
+import type { MyId } from "$lib/domain"
+import { storedState } from "$lib/stored-state"
 
 const ID_KEY = "me:id"
 
