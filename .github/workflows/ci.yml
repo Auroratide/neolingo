@@ -14,6 +14,7 @@ jobs:
       PUBLIC_ENABLED: false
       PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321"
       PUBLIC_SUPABASE_KEY: "fake-key"
+      PUBLIC_TURNSTILE_KEY: "placeholder"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
