@@ -2,10 +2,6 @@
 	import Stack from "$lib/design-system/Stack.svelte"
 </script>
 
-<svelte:head>
-	<title>Accessibility Statement</title>
-</svelte:head>
-
 <Stack>
 	<section>
 		<p>The Internet is for all people, not just some people. As such, it is both my aspiration and my duty to make this website and all my products as accessible to everyone as possible, regardless of ability. Whether it be articles, videos, games, or whatever it is I even make, I want everyone to feel included.</p>

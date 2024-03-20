@@ -9,9 +9,6 @@
 	const dictionary = Api.getDictionary()
 </script>
 
-<svelte:head>
-	<title>Dictionary</title>
-</svelte:head>
 {#await dictionary}
 	<p class="{VisuallyHidden}">Loading dictionary. Please wait.</p>
 	<div class="stack">

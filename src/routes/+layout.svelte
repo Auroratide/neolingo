@@ -11,12 +11,16 @@
 	const { children } = $props<Props>()
 
 	const isBetaPath = $derived($page.url.pathname.includes("beta"))
+	const title = $derived($page.data.metadata.title)
 </script>
 
+<svelte:head>
+	<title>Neolingo | {title === "Neolingo" ? "Invent a word" : title}</title>
+</svelte:head>
 <Container>
 	<Stack>
 		<header>
-			<h1>Neolingo</h1>
+			<h1>{title}</h1>
 			{#if featureFlags.enabled}
 				<nav>
 					<ul class="simple-link-list fancy-links min-spacing">
@@ -58,9 +62,10 @@
 <Notifier />
 
 <style>
-	main { width: 100%; }
-	footer {
-		width: 100%;
+	header, main, footer { width: 100%; }
+
+	header, footer {
+		text-align: center;
 	}
 
 	.simple-link-list {

@@ -11,9 +11,6 @@
 	const step = $derived(done(prompt.myWord) + done(votes.myVote))
 </script>
 
-<svelte:head>
-	<title>Neolingo</title>
-</svelte:head>
 <Stack size="3em">
 	<Introduction />
 	{#if true} <!-- this looks dumb, but it's to make the transition not trigger on navigation -->

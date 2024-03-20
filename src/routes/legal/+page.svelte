@@ -2,10 +2,6 @@
 	import Stack from "$lib/design-system/Stack.svelte"
 </script>
 
-<svelte:head>
-	<title>Terms of Service</title>
-</svelte:head>
-
 <Stack>
 	<section>
 		<h2>Terms of Service</h2>
