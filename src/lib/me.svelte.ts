@@ -1,28 +1,22 @@
 import * as Api from "./api"
 import type { MyId } from "./domain"
-import { browser } from "$app/environment"
+import { storedState } from "./stored-state"
 
 const ID_KEY = "me:id"
 
 export type MeRune = {
-	readonly id: Promise<MyId>
+	readonly id: MyId | undefined
+	generateId: (token: string) => Promise<MyId>
 }
 
-const id = new Promise<MyId>((resolve) => {
-	if (!browser) return
-
-	const storedId = localStorage.getItem(ID_KEY)
-
-	if (storedId != null) {
-		resolve(storedId)
-	} else {
-		Api.generateMyId().then((newId) => {
-			localStorage.setItem(ID_KEY, newId)
-			resolve(newId)
-		})
-	}
-})
+const id = storedState<MyId | undefined>(ID_KEY, undefined)
 
 export default {
-	get id() { return id },
+	get id() { return id.value },
+	generateId: async (token: string) => {
+		return Api.generateMyId(token).then((newId) => {
+			id.value = newId
+			return newId
+		})
+	},
 } satisfies MeRune

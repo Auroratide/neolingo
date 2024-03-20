@@ -6,16 +6,16 @@ import { raiseError } from "./errors"
 
 const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_KEY)
 
-export async function generateMyId(): Promise<MyId> {
-	return await supabase.rpc("generate_new_person")
-		.maybeSingle<string>()
-		.then(({ data, error }) => {
-			if (error != null || data == null) {
-				raiseError(error, "Failed to generate new person.")
-			}
+export async function generateMyId(token: string): Promise<MyId> {
+	return await supabase.functions.invoke("generate-my-id", {
+		body: { token },
+	}).then(({ data, error }) => {
+		if (error != null || data == null) {
+			raiseError(error, "I could not do what you wanted. Do you need to verify a captcha?")
+		}
 
-			return data
-		})
+		return data.id
+	})
 }
 
 export async function getPromptForToday(): Promise<Prompt> {

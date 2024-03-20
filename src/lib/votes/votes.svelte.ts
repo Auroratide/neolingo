@@ -52,7 +52,11 @@ async function reset(newWords: readonly SubmittedWord[]) {
 }
 
 async function submitVote(id: SubmittedWordId) {
-	await Api.submitVote(await me.id, (await prompt.content).id, id)
+	if (!me.id) {
+		throw new Error("Could not submit word. Do you need to verify a captcha?")
+	}
+
+	await Api.submitVote(me.id, (await prompt.content).id, id)
 	myVote.value = id
 }
 

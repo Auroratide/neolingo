@@ -3,6 +3,9 @@
 	import prompt from "$lib/prompt/prompt.svelte"
 	import FormCard from "$lib/design-system/FormCard.svelte"
 	import { MIN_LENGTH } from "$lib/prompt/requirements"
+	import Turnstile from "$lib/Turnstile.svelte"
+	import me from "$lib/me.svelte"
+	import { slide } from "svelte/transition"
 
 	type Props = {
 		focus?: boolean
@@ -13,6 +16,10 @@
 	let currentWord = $state(prompt.myWord)
 
 	const onsubmit = async (form: FormData) => {
+		if (!me.id) {
+			await me.generateId(form.get("cf-turnstile-response") as string)
+		}
+
 		await prompt.submitWord(form.get("word-input") as string)
 	}
 
@@ -49,6 +56,11 @@
 			<button type="submit" class="slightly-larger" disabled={currentWord.length < MIN_LENGTH || alreadySubmitted}>
 				Submit Word
 			</button>
+		{/if}
+		{#if !me.id}
+			<div out:slide={{ axis: "y" }}>
+				<Turnstile />
+			</div>
 		{/if}
 	{/snippet}
 </FormCard>

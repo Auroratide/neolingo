@@ -40,7 +40,11 @@ export default {
 	get content() { return prompt },
 	get myWord() { return myWord.value },
 	submitWord: async (word: string) => {
-		await Api.submitWord(await me.id, (await prompt).id, word)
+		if (!me.id) {
+			throw new Error("Could not submit word. Do you need to verify a captcha?")
+		}
+
+		await Api.submitWord(me.id, (await prompt).id, word)
 		myWord.value = word
 	},
 } satisfies PromptRune

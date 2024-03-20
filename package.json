@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "concurrently -n \"FUNCTIONS,SVELTE\" -c \"green,red\" \"pnpm backend:start\" \"vite dev\"",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "npm run test:integration && npm run test:unit",
@@ -16,7 +16,8 @@
 		"db:stop": "supabase stop",
 		"db:migration": "supabase migration new",
 		"db:up": "supabase migration up",
-		"db:reset": "supabase db reset"
+		"db:reset": "supabase db reset",
+		"backend:start": "supabase functions serve --env-file ./supabase/.env.local"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.42.1",
@@ -27,6 +28,7 @@
 		"@types/pg": "^8.11.2",
 		"@typescript-eslint/eslint-plugin": "^7.1.1",
 		"@typescript-eslint/parser": "^7.1.1",
+		"concurrently": "^8.2.2",
 		"eslint": "^8.57.0",
 		"eslint-plugin-svelte": "2.36.0-next.6",
 		"jsdom": "^24.0.0",

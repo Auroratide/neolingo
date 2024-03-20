@@ -4,14 +4,26 @@ import type { SubmittedWord } from "$lib/domain"
 import { withDb } from "$test/withDb"
 
 describe("api", withDb((db) => {
-	test("generateMyId", async () => {
-		const result1 = await Api.generateMyId()
-		const result2 = await Api.generateMyId()
+	const PASSING_TOKEN = "PASS.DUMMY.TOKEN.PASS"
+	const FAILING_TOKEN = "FAIL.DUMMY.TOKEN.FAIL"
 
-		expect(result1.length).toBeGreaterThan(0)
-		expect(result2.length).toBeGreaterThan(0)
-		expect(result1).not.toEqual(result2)
+	describe("generateMyId", () => {
+		test("success", async () => {
+			const result1 = await Api.generateMyId(PASSING_TOKEN)
+			const result2 = await Api.generateMyId(PASSING_TOKEN)
+
+			expect(result1.length).toBeGreaterThan(0)
+			expect(result2.length).toBeGreaterThan(0)
+			expect(result1).not.toEqual(result2)
+		})
+
+		test("failure", async () => {
+			const promise = Api.generateMyId(FAILING_TOKEN)
+
+			await expect(promise).rejects.toThrow(/failed to generate new person/i)
+		})
 	})
+
 
 	test("getPromptForToday", async () => {
 		// given
@@ -66,7 +78,7 @@ describe("api", withDb((db) => {
 
 		test("submitting a valid word for the first time", async () => {
 			// given
-			const myId = await Api.generateMyId()
+			const myId = await Api.generateMyId(PASSING_TOKEN)
 			const prompt = await Api.getPromptForToday()
 
 			const myWord = "aaaaa"
@@ -85,7 +97,7 @@ describe("api", withDb((db) => {
 
 		test("trying to submit a different word for the same prompt", async () => {
 			// given
-			const myId = await Api.generateMyId()
+			const myId = await Api.generateMyId(PASSING_TOKEN)
 			const prompt = await Api.getPromptForToday()
 
 			const myFirstWord = "aaaaa"
@@ -109,7 +121,7 @@ describe("api", withDb((db) => {
 
 		test("word has wrong number of letters", async () => {
 			// given
-			const myId = await Api.generateMyId()
+			const myId = await Api.generateMyId(PASSING_TOKEN)
 			const prompt = await Api.getPromptForToday()
 
 			// when
@@ -129,7 +141,7 @@ describe("api", withDb((db) => {
 
 		test("word has non-letters", async () => {
 			// given
-			const myId = await Api.generateMyId()
+			const myId = await Api.generateMyId(PASSING_TOKEN)
 			const prompt = await Api.getPromptForToday()
 
 			const nonLetters = "11111"
@@ -157,7 +169,7 @@ describe("api", withDb((db) => {
 
 		test("prompt id is not known", async () => {
 			// given
-			const myId = await Api.generateMyId()
+			const myId = await Api.generateMyId(PASSING_TOKEN)
 			const missingPromptId = "-1"
 
 			const tooLong = "aaaaa"
@@ -177,7 +189,7 @@ describe("api", withDb((db) => {
 				SELECT id FROM private.prompts WHERE day = $1
 			`, [yesterday]).then(result => result.rows[0].id)
 
-			const myId = await Api.generateMyId()
+			const myId = await Api.generateMyId(PASSING_TOKEN)
 
 			const myWord = "aaaaa"
 
@@ -213,7 +225,7 @@ describe("api", withDb((db) => {
 				SELECT id FROM private.prompts WHERE day = $1;
 			`, [today]).then(result => result.rows[0].id)
 
-			;[alice, marisa, aya] = await Promise.all([Api.generateMyId(), Api.generateMyId(), Api.generateMyId()])
+			;[alice, marisa, aya] = await Promise.all([Api.generateMyId(PASSING_TOKEN), Api.generateMyId(PASSING_TOKEN), Api.generateMyId(PASSING_TOKEN)])
 		})
 		
 		test("no words exist for the prompt yet", async () => {
