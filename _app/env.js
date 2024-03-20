@@ -1,1 +1,1 @@
-export const env={"PUBLIC_ENABLED":"false","PUBLIC_SUPABASE_KEY":"fake-key","PUBLIC_SUPABASE_URL":"http://127.0.0.1:54321"}
+export const env={"PUBLIC_ENABLED":"false","PUBLIC_SUPABASE_KEY":"fake-key","PUBLIC_TURNSTILE_KEY":"placeholder","PUBLIC_SUPABASE_URL":"http://127.0.0.1:54321"}

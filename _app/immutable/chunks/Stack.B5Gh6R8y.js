@@ -1,1 +1,0 @@
-import{B as o,C as r,D as c,q as p,x as f,w as l,n as m}from"./disclose-version.DfzY1BgP.js";import{l as n,m as v}from"./runtime.BPzuCsVO.js";var d=m('<div class="stack svelte-meho9k"><!></div>');function k(a,e){v(e,!0);const t=o(e,"size",3,"2em");var s=l(a,!0,d),i=f(s);r(s,"--gap",()=>t()),c(()=>e.children,i),p(a,s),n()}export{k as S};
