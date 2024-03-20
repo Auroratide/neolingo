@@ -3,20 +3,21 @@
 	import Container from "$lib/design-system/Container.svelte"
 	import Stack from "$lib/design-system/Stack.svelte"
 	import Notifier from "$lib/notifications/Notifier.svelte"
-	import { PUBLIC_ENABLED } from "$env/static/public"
+	import { page } from "$app/stores"
 	import FocusCard from "$lib/design-system/FocusCard.svelte"
+	import featureFlags from "$lib/feature-flags.svelte"
 
 	type Props = { children: Snippet }
 	const { children } = $props<Props>()
 
-	const enabled = PUBLIC_ENABLED === "true"
+	const isBetaPath = $derived($page.url.pathname.includes("beta"))
 </script>
 
 <Container>
 	<Stack>
 		<header>
 			<h1>Neolingo</h1>
-			{#if enabled}	
+			{#if featureFlags.enabled}
 				<nav>
 					<ul class="simple-link-list fancy-links min-spacing">
 						<li><a href="/">Invent</a></li>
@@ -26,7 +27,7 @@
 			{/if}
 		</header>
 		<main>
-			{#if enabled}
+			{#if featureFlags.enabled || isBetaPath}
 				{@render children()}
 			{:else}
 				<FocusCard>
@@ -41,7 +42,7 @@
 		</main>
 		<footer>
 			<Stack size="0.75em">
-				{#if enabled}
+				{#if featureFlags.enabled}
 					<ul class="simple-link-list fancy-links max-spacing">
 						<li><a href="/">Invent</a></li>
 						<li><a href="/dictionary">Dictionary</a></li>
