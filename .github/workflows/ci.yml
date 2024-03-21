@@ -19,31 +19,32 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: latest
-      - run: supabase link --project-ref $PROJECT_ID
-      - run: supabase db push
-      - run: supabase secrets set TURNSTILE_SECRET_KEY="$TURNSTILE_SECRET_KEY"
-      - run: supabase functions deploy
+      - run: supabase --version
+      # - run: supabase link --project-ref $PROJECT_ID
+      # - run: supabase db push
+      # - run: supabase secrets set TURNSTILE_SECRET_KEY="$TURNSTILE_SECRET_KEY"
+      # - run: supabase functions deploy
 
-  site-deploy:
-    name: Site Deploy
-    runs-on: ubuntu-latest
-    env:
-      ENV: prod
-      PUBLIC_ENABLED: false
-      PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      PUBLIC_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      PUBLIC_TURNSTILE_KEY: ${{ secrets.TURNSTILE_SITEKEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          cname: neolingo.fun
+  # site-deploy:
+  #   name: Site Deploy
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     ENV: prod
+  #     PUBLIC_ENABLED: false
+  #     PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  #     PUBLIC_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+  #     PUBLIC_TURNSTILE_KEY: ${{ secrets.TURNSTILE_SITEKEY }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v3
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: '.nvmrc'
+  #         cache: pnpm
+  #     - run: pnpm install --frozen-lockfile
+  #     - run: pnpm build
+  #     - uses: peaceiris/actions-gh-pages@v3
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         publish_dir: ./build
+  #         cname: neolingo.fun
