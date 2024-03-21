@@ -6,15 +6,32 @@ on:
       - main
 
 jobs:
-  deploy:
-    name: Deploy
+  backend-deploy:
+    name: Backend Deploy
+    runs-on: ubuntu-latest
+    env:
+      ENV: prod
+      PROJECT_ID: ${{ secrets.SUPABASE_REF }}
+      TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase link --project-ref $PROJECT_ID
+      - run: supabase db push
+      - run: supabase secrets set TURNSTILE_SECRET_KEY="$TURNSTILE_SECRET_KEY"
+      - run: supabase functions deploy
+
+  site-deploy:
+    name: Site Deploy
     runs-on: ubuntu-latest
     env:
       ENV: prod
       PUBLIC_ENABLED: false
-      PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321"
-      PUBLIC_SUPABASE_KEY: "fake-key"
-      PUBLIC_TURNSTILE_KEY: "placeholder"
+      PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      PUBLIC_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      PUBLIC_TURNSTILE_KEY: ${{ secrets.TURNSTILE_SITEKEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
