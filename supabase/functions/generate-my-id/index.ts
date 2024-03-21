@@ -24,7 +24,7 @@ async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
 	}
 
 	const form = new FormData()
-	form.append("secret", Deno.env.get("CLOUDFLARE_SECRET_KEY") ?? "")
+	form.append("secret", Deno.env.get("TURNSTILE_SECRET_KEY") ?? "")
 	form.append("response", token)
 	form.append("remoteip", ip)
 
