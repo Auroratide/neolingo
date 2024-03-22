@@ -44,7 +44,9 @@
 
 		if (shouldTransition) {
 			setTimeout(() => {
-				document.querySelector(`#${transitionTo!.id}`)?.scrollIntoView()
+				document.querySelector(`#${transitionTo!.id}`)?.scrollIntoView({
+					behavior: "smooth",
+				})
 			}, 100)
 		}
 	}

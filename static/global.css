@@ -25,7 +25,6 @@
 html {
 	background-color: var(--color-a);
 	background-image: url("/bg.png");
-	scroll-behavior: smooth;
 }
 
 @media (prefers-color-scheme: light) {
