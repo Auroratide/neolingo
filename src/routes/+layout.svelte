@@ -12,10 +12,18 @@
 
 	const isBetaPath = $derived($page.url.pathname.includes("beta"))
 	const title = $derived($page.data.metadata.title)
+	const pageTitle = $derived(`Neolingo | ${title === "Neolingo" ? "Invent a word" : title}`)
 </script>
 
 <svelte:head>
-	<title>Neolingo | {title === "Neolingo" ? "Invent a word" : title}</title>
+	<title>{pageTitle}</title>
+	<meta name="description" content="Each day, invent a word for a concept that doesn't have a word yet!" />
+	<meta name="og:site_name" content="Neolingo" />
+	<meta name="og:title" content="Neolingo | Invent a word" />
+	<meta name="og:type" content="website" />
+	<meta name="og:image" content="https://neolingo.fun/logo.png" />
+	<meta name="og:url" content="https://neolingo.fun" />
+	<meta name="og:description" content="Each day, invent a word for a concept that doesn't have a word yet!" />
 </svelte:head>
 <Container>
 	<Stack>
