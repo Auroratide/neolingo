@@ -121,6 +121,11 @@
 		opacity: 0.667;
 	}
 
+	legend {
+		margin: auto;
+		padding-inline: 0.5em;
+	}
+
 	input, label { cursor: pointer; }
 
 	.gridded-radios {
