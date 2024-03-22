@@ -10,3 +10,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .playwright
+
+# Hidden data files
+*.prod.csv
