@@ -43,10 +43,13 @@
 </div>
 
 <style>
-	.container { position: relative; }
+	.container {
+		position: relative;
+		max-width: 100%;
+	}
 
 	.large-letters {
-		font-size: 2em;
+		font-size: min(2em, 8vw);
 		text-align: center;
 	}
 
@@ -58,6 +61,8 @@
 		letter-spacing: 0.1em;
 		padding: 0;
 		border-block-end: 0.2em solid var(--color-o);
+		width: 12.5em;
+		max-width: 100%;
 	}
 
 	.fill-in-the-blank:focus {

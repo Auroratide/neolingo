@@ -63,6 +63,7 @@
 				type="search"
 				placeholder="type word"
 				autocomplete="off"
+				spellcheck="false"
 				onkeypress={(e) => e.key === "Enter" && onSearch(e)}
 			/>
 			<button type="button" class="subtle-button" onclick={onSearch}>Find</button>
@@ -101,6 +102,7 @@
 	<label for="{id}-{word.id}" in:fly={{ x: -20, duration: 120, delay: 60 }} out:fly={{ x: 20, duration: 120 }} style:grid-area="{i + 1} / 4 / {i + 2} / 5">
 		{word.text}
 	</label>
+	<div style:grid-area="{i + 1} / 5 / {i + 2} / 6"><!-- spacing --></div>
 {/snippet}
 
 {#snippet transitioningPhrase(text: string, row: number)}
@@ -113,7 +115,7 @@
 	fieldset {
 		border-inline: none;
 		border-block: 0.125em solid var(--color-a);
-		padding-inline: 2em;
+		width: min(100%, 25em);
 	}
 
 	fieldset:has(input:checked) input[type="radio"]:not(:checked),
@@ -130,7 +132,7 @@
 
 	.gridded-radios {
 		display: grid;
-		grid-template-columns: 1fr auto auto 5fr;
+		grid-template-columns: 2fr auto auto auto 3fr;
 		column-gap: 0.5em;
 		row-gap: 0.5em;
 		text-align: start;
@@ -261,5 +263,7 @@
 		flex-direction: row;
 		gap: 0.5em;
 		align-items: flex-end;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 </style>
