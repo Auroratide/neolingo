@@ -22,11 +22,13 @@ const GENERATED = "votes:generated"
 const VOTABLE = "votes:votable"
 const MY_VOTE = "votes:my-vote"
 const SPECIFIC_WORD = "votes:specific-word"
+const SEEN_WORDS = "votes:seen-words"
 
 let allWords = $state<Promise<readonly SubmittedWord[]>>(new Promise(() => {}))
 const votableWords = storedState<readonly SubmittedWord[]>(VOTABLE, [])
 const myVote = storedState<SubmittedWordId | undefined>(MY_VOTE, undefined)
 const specificWord = storedState<SubmittedWord | undefined>(SPECIFIC_WORD, undefined)
+const seenWords = storedState<SubmittedWordId[]>(SEEN_WORDS, [])
 
 $effect.root(() => {
 	$effect(() => {
@@ -35,6 +37,7 @@ $effect.root(() => {
 		if (!day.isToday(lastGenerated)) {
 			myVote.value = undefined
 			specificWord.value = undefined
+			seenWords.value = []
 
 			allWords = Api.getVotableWords().then(reset)
 		} else {
@@ -47,6 +50,7 @@ async function reset(newWords: readonly SubmittedWord[]) {
 	localStorage.setItem(GENERATED, new Date().toISOString())
 
 	votableWords.value = chooseWords(newWords, WORDS_TO_CHOOSE)
+	seenWords.value = votableWords.value.map((word) => word.id)
 
 	return newWords
 }
@@ -62,15 +66,17 @@ async function submitVote(id: SubmittedWordId) {
 
 async function replaceWord(index: number) {
 	const currentAllWords = await allWords
-	const votableWordIds = votableWords.value.map((word) => word.id)
-	const wordsToChooseFrom = currentAllWords.filter((word) =>
-		!votableWordIds.includes(word.id) && word.text !== prompt.myWord,
-	)
+	let wordsToChooseFrom = currentAllWords.filter(isVotableWord)
+	if (wordsToChooseFrom.length === 0) {
+		seenWords.value = votableWords.value.map((word) => word.id)
+		wordsToChooseFrom = currentAllWords.filter(isVotableWord)
+	}
 
 	const newWord = chooseWords(wordsToChooseFrom, 1)[0]
 
 	if (newWord != null) {
 		votableWords.value = votableWords.value.toSpliced(index, 1, newWord)
+		seenWords.value = [...seenWords.value, newWord.id]
 	}
 }
 
@@ -92,3 +98,11 @@ export default {
 	replaceWord,
 	findSpecificWord,
 } satisfies VotesRune
+
+const votableWordIds = $derived(votableWords.value.map((word) => word.id))
+function isVotableWord(word: SubmittedWord): boolean {
+	return !votableWordIds.includes(word.id)
+		&& word.text !== prompt.myWord
+		&& word.text !== specificWord.value?.text
+		&& !seenWords.value.includes(word.id)
+}
