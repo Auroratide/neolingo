@@ -32,15 +32,13 @@
 		e.stopPropagation()
 		e.preventDefault()
 
-		if (currentSearch === "") {
-			searchState = "idle"
-			return
-		}
-
 		searchState = "searching"
 		const result = await onsearchword(currentSearch)
-		searchState = result == null ? "not-found" :
-			result.text === myWord ? "my-word" : "found"
+		searchState = result == null && currentSearch === ""
+			? "idle" : result == null
+				? "not-found" : result.text === myWord
+					? "my-word"
+					: "found"
 
 		if (searchState === "found") {
 			value = result!.id
