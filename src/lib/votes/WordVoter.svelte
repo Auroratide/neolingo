@@ -21,9 +21,27 @@
 		onsearchword,
 	} = $props<Props>()
 
-	type SearchState = "idle" | "searching" | "not-found" | "my-word" | "found"
+	type SearchState = "idle" | "searching" | "not-found" | "my-word" | "found" | "already-listed"
 	let currentSearch = $state(specificWord?.text ?? "")
-	let searchState = $state<SearchState>(specificWord?.text === myWord ? "my-word" : "idle")
+	let isSearching = $state(false)
+	let submittedSearch = $state(specificWord?.text ?? "")
+	let searchResult = $state(specificWord)
+
+	const searchState = $derived.by<SearchState>(() => {
+		if (isSearching)
+			return "searching"
+		else if (searchResult == null && submittedSearch === "")
+			return "idle"
+		else if (searchResult == null)
+			return "not-found"
+		else if (specificWord?.text === myWord)
+			return "my-word"
+		else if (words.some((word) => word.text === specificWord?.text))
+			return "already-listed"
+		else
+			return "found"
+	})
+
 	async function onSearch(e: Event) {
 		if (currentSearch === specificWord?.text) {
 			return // continue form submission
@@ -32,16 +50,14 @@
 		e.stopPropagation()
 		e.preventDefault()
 
-		searchState = "searching"
-		const result = await onsearchword(currentSearch)
-		searchState = result == null && currentSearch === ""
-			? "idle" : result == null
-				? "not-found" : result.text === myWord
-					? "my-word"
-					: "found"
+		isSearching = true
+		searchResult = await onsearchword(currentSearch).finally(() => {
+			isSearching = false
+			submittedSearch = currentSearch
+		})
 
-		if (searchState === "found") {
-			value = result!.id
+		if (searchResult != null) {
+			value = searchResult.id
 		}
 	}
 </script>
@@ -68,6 +84,8 @@
 		</div>
 		{#if searchState === "searching"}
 			{@render transitioningPhrase("", words.length + 2)}
+		{:else if searchState === "already-listed"}
+			{@render transitioningPhrase("This word is already listed above.", words.length + 2)}
 		{:else if searchState === "not-found"}
 			{@render transitioningPhrase("We could not find this word.", words.length + 2)}
 		{:else if searchState === "my-word"}
