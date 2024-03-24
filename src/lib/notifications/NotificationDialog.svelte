@@ -9,7 +9,7 @@
 	}; const {
 		open,
 		value,
-	} = $props<Props>()
+	}: Props = $props()
 
 	const close = () => {
 		value.dismiss()

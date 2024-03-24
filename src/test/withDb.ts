@@ -34,7 +34,7 @@ export function withDb(tests: (db: TestDb) => void) {
 					INSERT INTO private.prompts (text, day)
 					VALUES ($1, $2)
 					RETURNING id
-				`, [text, day]).then((result) => result.rows[0].id)
+				`, [text, day.toISOString()]).then((result) => result.rows[0].id)
 
 				return { id, text, day }
 			},

@@ -7,7 +7,7 @@
 	}; const {
 		size = "2em",
 		children,
-	} = $props<Props>()
+	}: Props = $props()
 </script>
 
 <div class="stack" style:--gap="{size}">

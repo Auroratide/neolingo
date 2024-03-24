@@ -8,7 +8,7 @@
 	import featureFlags from "$lib/feature-flags.svelte"
 
 	type Props = { children: Snippet }
-	const { children } = $props<Props>()
+	const { children }: Props = $props()
 
 	const isBetaPath = $derived($page.url.pathname.includes("beta"))
 	const title = $derived($page.data.metadata.title)

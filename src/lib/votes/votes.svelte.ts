@@ -90,6 +90,8 @@ async function findSpecificWord(text: string): Promise<SubmittedWord | undefined
 	const found = currentAllWords.find((word) => word.text === text)
 	if (found != null && found.text != prompt.myWord)
 		specificWord.value = found
+	else
+		specificWord.value = undefined
 
 	return found
 }

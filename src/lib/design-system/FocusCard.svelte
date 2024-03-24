@@ -15,7 +15,7 @@
 		error = false,
 		transition = false,
 		children,
-	} = $props<Props>()
+	}: Props = $props()
 
 	let transitioning = $state(false)
 	const onTransitionStart = () => transitioning = true

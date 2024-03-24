@@ -5,7 +5,7 @@
 		value: OfficialWord
 	}; const {
 		value,
-	} = $props<Props>()
+	}: Props = $props()
 
 	const formatter = Intl.DateTimeFormat([], {
 		year: "numeric",

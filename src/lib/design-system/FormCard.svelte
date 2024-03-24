@@ -28,7 +28,7 @@
 		"submitted-label": submittedLabel,
 		onsubmit: submitData,
 		focus = false,
-	} = $props<Props>()
+	}: Props = $props()
 
 	let submitting = $state(false)
 	const onsubmit = async (e: SubmitEvent) => {

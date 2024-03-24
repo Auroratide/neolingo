@@ -9,9 +9,9 @@
 	}; let {
 		id,
 		label,
-		value = "",
+		value = $bindable(""),
 		disabled = false,
-	} = $props<Props>()
+	}: Props = $props()
 
 	const forceLowercase = (e: Event) => {
 		const target = e.target as HTMLInputElement

@@ -5,7 +5,7 @@
 		label: string
 	}; const {
 		label,
-	} = $props<Props>()
+	}: Props = $props()
 </script>
 
 <div class="spinner {Elevated}">

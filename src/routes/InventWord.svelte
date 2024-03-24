@@ -11,7 +11,7 @@
 		focus?: boolean
 	}; const {
 		focus = false,
-	} = $props<Props>()
+	}: Props = $props()
 
 	let currentWord = $state(prompt.myWord)
 

@@ -14,12 +14,12 @@
 	}; let {
 		id,
 		words,
-		value,
+		value = $bindable(),
 		specificWord,
 		myWord,
 		onreplaceword,
 		onsearchword,
-	} = $props<Props>()
+	}: Props = $props()
 
 	type SearchState = "idle" | "searching" | "not-found" | "my-word" | "found" | "already-listed"
 	let currentSearch = $state(specificWord?.text ?? "")
@@ -34,7 +34,7 @@
 			return "idle"
 		else if (searchResult == null)
 			return "not-found"
-		else if (specificWord?.text === myWord)
+		else if (searchResult?.text === myWord)
 			return "my-word"
 		else if (words.some((word) => word.text === specificWord?.text))
 			return "already-listed"
@@ -51,10 +51,12 @@
 		e.preventDefault()
 
 		isSearching = true
-		searchResult = await onsearchword(currentSearch).finally(() => {
+		searchResult = await onsearchword(currentSearch).catch((e) => {
 			isSearching = false
-			submittedSearch = currentSearch
+			throw e
 		})
+		submittedSearch = currentSearch
+		isSearching = false
 
 		if (searchResult != null) {
 			value = searchResult.id
@@ -84,15 +86,15 @@
 		</div>
 		{#if searchState === "searching"}
 			{@render transitioningPhrase("", words.length + 2)}
-		{:else if searchState === "already-listed"}
+		{/if} {#if searchState === "already-listed"}
 			{@render transitioningPhrase("This word is already listed above.", words.length + 2)}
-		{:else if searchState === "not-found"}
+		{/if} {#if searchState === "not-found"}
 			{@render transitioningPhrase("We could not find this word.", words.length + 2)}
-		{:else if searchState === "my-word"}
+		{/if} {#if searchState === "my-word"}
 			{@render transitioningPhrase("Hey, that's your word!", words.length + 2)}
-		{:else if specificWord != null}
+		{/if} {#if searchState === "found" && specificWord != null}
 			{@render wordoption(specificWord, words.length + 2, false)}
-		{:else}
+		{/if} {#if searchState === "idle"}
 			{@render transitioningPhrase("", words.length + 2)}
 		{/if}
 	</div>

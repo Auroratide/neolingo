@@ -9,7 +9,7 @@
 		focus?: boolean
 	}; const {
 		focus = false,
-	} = $props<Props>()
+	}: Props = $props()
 
 	let currentVote = $state(votes.myVote)
 

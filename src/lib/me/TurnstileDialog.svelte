@@ -7,7 +7,7 @@
 		oncancel: () => void
 	}; const {
 		oncancel,
-	} = $props<Props>()
+	}: Props = $props()
 
 	let dialog: HTMLDialogElement
 

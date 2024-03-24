@@ -9,7 +9,7 @@
 	}; const {
 		word,
 		definition,
-	} = $props<Props>()
+	}: Props = $props()
 
 	const text = $derived(
 		`I invented a new word!\n\n${word}: ${definition}\n\nInvent your own word at neolingo.fun.`,
