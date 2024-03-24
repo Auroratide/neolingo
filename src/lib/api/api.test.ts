@@ -20,7 +20,7 @@ describe("api", withDb((db) => {
 		test("failure", async () => {
 			const promise = Api.generateMyId(FAILING_TOKEN)
 
-			await expect(promise).rejects.toThrow(/failed to generate new person/i)
+			await expect(promise).rejects.toThrow(/do you need to verify a captcha/i)
 		})
 	})
 
