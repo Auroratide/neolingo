@@ -28,6 +28,7 @@
 <div class="position-container">
 	<section
 		{id}
+		tabindex="-1"
 		class="focus-card"
 		class:focus
 		class:error
