@@ -22,7 +22,7 @@ $effect.root(() => {
 		const lastGenerated = new Date(localStorage.getItem(GENERATED) ?? 0)
 		const storedPrompt = localStorage.getItem(CONTENT)
 
-		if (storedPrompt == null || !day.isToday(lastGenerated)) {
+		if (!day.isToday(lastGenerated) || storedPrompt == null) {
 			prompt = Api.getPromptForToday().then((newPrompt) => {
 				localStorage.setItem(GENERATED, new Date().toISOString())
 				localStorage.setItem(CONTENT, JSON.stringify(newPrompt))

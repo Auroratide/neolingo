@@ -15,6 +15,13 @@
 
 	let currentWord = $state(prompt.myWord)
 
+	// handle when next day triggers, reset the input field
+	$effect(() => {
+		if (!prompt.myWord) {
+			currentWord = prompt.myWord
+		}
+	})
+
 	const onsubmit = async (form: FormData) => {
 		if (!me.id) {
 			await me.generateId(form.get("cf-turnstile-response") as string)
