@@ -78,7 +78,7 @@
 		height: 1.5em;
 		line-height: 1;
 
-		&::before, &&::after {
+		&::before, &::after {
 			content: none;
 			display: none;
 		}

@@ -18,6 +18,8 @@ declare global {
 			render: (selector: string, options: {
 				sitekey: string,
 				callback: (token: string) => void,
+				"error-callback": (code: number) => void,
+				"before-interactive-callback": () => void,
 			}) => string,
 			remove: (id: string) => void,
 		},

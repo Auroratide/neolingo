@@ -3,9 +3,9 @@
 	import prompt from "$lib/prompt/prompt.svelte"
 	import FormCard from "$lib/design-system/FormCard.svelte"
 	import { MIN_LENGTH } from "$lib/prompt/requirements"
-	import Turnstile from "$lib/me/Turnstile.svelte"
 	import me from "$lib/me/me.svelte"
-	import { slide } from "svelte/transition"
+	import TurnstileDialog from "$lib/me/TurnstileDialog.svelte"
+	import { turnstile } from "$lib/me/turnstile"
 
 	type Props = {
 		focus?: boolean
@@ -22,9 +22,25 @@
 		}
 	})
 
+	const onTurnstileComplete = async (token: string) => {
+		await me.generateId(token)
+	}
+
+	let challengeDialog = $state<TurnstileDialog | null>(null)
+	const onChallenge = () => {
+		challengeDialog?.showModal()
+	}
+
+	let rejectChallenge: (v?: unknown) => void = $state(() => {})
+
 	const onsubmit = async (form: FormData) => {
 		if (!me.id) {
-			await me.generateId(form.get("cf-turnstile-response") as string)
+			await Promise.race([
+				turnstile(onChallenge).then(onTurnstileComplete),
+				new Promise((resolve) => rejectChallenge = resolve).then(() => {
+					throw new Error("You must complete the captcha to submit a word.")
+				}),
+			])
 		}
 
 		await prompt.submitWord(form.get("word-input") as string)
@@ -64,13 +80,12 @@
 				Submit Word
 			</button>
 		{/if}
-		{#if !me.id}
-			<div out:slide={{ axis: "y" }}>
-				<Turnstile />
-			</div>
-		{/if}
 	{/snippet}
 </FormCard>
+
+{#if !me.id}
+	<TurnstileDialog bind:this={challengeDialog} oncancel={rejectChallenge} />
+{/if}
 
 <style>
 	.slightly-larger { font-size: 1.15em; }
