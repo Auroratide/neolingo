@@ -21,10 +21,24 @@ describe("admin: prompts", withDb((db) => {
 		const previouslyThere = await db.query("SELECT text FROM private.prompts WHERE day = '2023-12-30'")
 			.then((res) => res.rows[0].text)
 
-		const newlyAdded = await db.query("SELECT text FROM private.prompts WHERE day = '2023-12-31'")
-			.then((res) => res.rows[0].text)
+		const { id: newlyAddedId, text: newlyAddedText } = await db.query("SELECT id, text FROM private.prompts WHERE day = '2023-12-31'")
+			.then((res) => res.rows[0])
 
 		expect(previouslyThere).toEqual("pre-existing prompt")
-		expect(newlyAdded).toEqual("(test) prompt 2")
+		expect(newlyAddedText).toEqual("(test) prompt 2")
+
+		// and
+		const initialWordsRowTwo = await db.query("SELECT text FROM private.words WHERE prompt_id = $1", [newlyAddedId])
+			.then((res) => res.rows.map((row) => row.text))
+
+		expect(initialWordsRowTwo).toEqual(expect.arrayContaining(["twoone", "twotwo"]))
+
+		// and
+		const rowThreeId = await db.query("SELECT id FROM private.prompts WHERE day = '2024-01-01'")
+			.then((res) => res.rows[0].id)
+		const initialWordsRowThree = await db.query("SELECT text FROM private.words WHERE prompt_id = $1", [rowThreeId])
+			.then((res) => res.rows.map((row) => row.text))
+
+		expect(initialWordsRowThree).toEqual(expect.arrayContaining(["threeone", "threetwo"]))
 	})
 }))
