@@ -1,10 +1,11 @@
-import type { Prompt } from "$lib/domain"
+import type { MyId, Prompt } from "$lib/domain"
 import { Client } from "pg"
 import { beforeAll, afterAll, beforeEach } from "vitest"
 
 export type TestDb = {
 	query: Client["query"],
 	setupPrompt: (template?: Omit<Partial<Prompt & { day: Date }>, "id">) => Promise<Prompt>,
+	setupPerson: () => Promise<MyId>,
 }
 
 export function withDb(tests: (db: TestDb) => void) {
@@ -37,6 +38,12 @@ export function withDb(tests: (db: TestDb) => void) {
 				`, [text, day.toISOString()]).then((result) => result.rows[0].id)
 
 				return { id, text, day }
+			},
+			async setupPerson() {
+				return await pg.query(`
+					INSERT INTO private.people DEFAULT VALUES
+					RETURNING id
+				`).then((result) => result.rows[0].id)
 			},
 		})
 	}

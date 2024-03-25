@@ -37,6 +37,16 @@ BEGIN
 		(doremy, 3, 'dreami'),
 		(eirin, 3, 'amblit'),
 		(flandre, 3, 'derire');
+
+	INSERT INTO private.votes
+		(person_id, prompt_id, word_id)
+	VALUES
+		(alice, 3, 2),
+		(byakuren, 3, 5),
+		(cirno, 3, 5),
+		(doremy, 3, 1),
+		(eirin, 3, 1),
+		(flandre, 3, 5);
 END $$;
 
 INSERT INTO private.dictionary
