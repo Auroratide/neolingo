@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach } from "vitest"
 import * as Api from "."
-import type { SubmittedWord } from "$lib/domain"
+import { getDayOf, type SubmittedWord } from "$lib/domain"
 import { withDb } from "$test/withDb"
 
 describe("api", withDb((db) => {
@@ -28,7 +28,7 @@ describe("api", withDb((db) => {
 	test("getPromptForToday", async () => {
 		// given
 		const now = new Date()
-		const today = now.toISOString().split("T")[0]
+		const today = getDayOf(now)
 		const expectedText = "PROMPT FROM TEST"
 
 		await db.query(`
@@ -50,7 +50,7 @@ describe("api", withDb((db) => {
 	describe("submitWord", () => {
 		beforeEach(async () => {
 			const now = new Date()
-			const today = now.toISOString().split("T")[0]
+			const today = getDayOf(now)
 			const todayText = "PROMPT FROM TEST TODAY"
 
 			await db.query(`
@@ -63,7 +63,7 @@ describe("api", withDb((db) => {
 			`, [today, todayText])
 
 			const yesterNow = new Date(Date.now() - 1000 * 60 * 60 * 24)
-			const yesterday = yesterNow.toISOString().split("T")[0]
+			const yesterday = getDayOf(yesterNow)
 			const yesterText = "PROMPT FROM TEST YESTERDAY"
 
 			await db.query(`
@@ -184,7 +184,7 @@ describe("api", withDb((db) => {
 		test("prompt id is for a different day", async () => {
 			// given
 			const yesterNow = new Date(Date.now() - 1000 * 60 * 60 * 24)
-			const yesterday = yesterNow.toISOString().split("T")[0]
+			const yesterday = getDayOf(yesterNow)
 			const promptId = await db.query(`
 				SELECT id FROM private.prompts WHERE day = $1
 			`, [yesterday]).then(result => result.rows[0].id)
@@ -209,7 +209,7 @@ describe("api", withDb((db) => {
 
 		beforeEach(async () => {
 			const now = new Date()
-			const today = now.toISOString().split("T")[0]
+			const today = getDayOf(now)
 			const todayText = "PROMPT FROM TEST TODAY"
 
 			await db.query(`

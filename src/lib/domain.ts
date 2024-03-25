@@ -19,16 +19,21 @@ export type OfficialWord = {
 	readonly day: Date
 }
 
+const PST = -8 // ignore daylight savings time
+export function getDayOf(date: Date): string {
+	const pacificDate = new Date(date)
+	pacificDate.setUTCHours(pacificDate.getUTCHours() + PST)
+	return pacificDate.toISOString().split("T")[0]
+}
+
 export function isSameDay(a: Date, b: Date) {
-	return a.getUTCFullYear() === b.getUTCFullYear()
-		&& a.getUTCMonth() === b.getUTCMonth()
-		&& a.getUTCDate() === b.getUTCDate()
+	return getDayOf(a) === getDayOf(b)
 }
 
 export function msUntilNextDay(fromDate: Date): number {
 	const nextDay = new Date(fromDate)
 	nextDay.setUTCDate(fromDate.getUTCDate() + 1)
-	nextDay.setUTCHours(0, 0, 0, 0)
+	nextDay.setUTCHours(-PST, 0, 0, 0)
 
 	return nextDay.getTime() - fromDate.getTime()
 }
