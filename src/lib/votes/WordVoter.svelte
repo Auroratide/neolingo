@@ -120,7 +120,6 @@
 	<label for="{id}-{word.id}" in:fly={{ x: -20, duration: 120, delay: 60 }} out:fly={{ x: 20, duration: 120 }} style:grid-area="{i + 1} / 4 / {i + 2} / 5">
 		{word.text}
 	</label>
-	<div style:grid-area="{i + 1} / 5 / {i + 2} / 6"><!-- spacing --></div>
 {/snippet}
 
 {#snippet transitioningPhrase(text: string, row: number)}
@@ -150,14 +149,17 @@
 
 	.gridded-radios {
 		display: grid;
-		grid-template-columns: 2fr auto auto auto 3fr;
+		grid-template-columns: calc(25% - 1.5em) auto auto 1fr;
 		column-gap: 0.5em;
 		row-gap: 0.5em;
 		text-align: start;
 
 		input { place-self: center end; }
 
-		label { place-self: center start; }
+		label {
+			place-self: center start;
+			hyphens: auto;
+		}
 
 		.span-all {
 			width: 100%;
