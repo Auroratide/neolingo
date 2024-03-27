@@ -41,7 +41,7 @@ $effect.root(() => {
 
 			allWords = Api.getVotableWords().then(reset)
 		} else {
-			allWords = Api.getVotableWords()
+			allWords = Api.getVotableWords().then(addWordsIfNeeded)
 		}
 	})
 })
@@ -51,6 +51,17 @@ async function reset(newWords: readonly SubmittedWord[]) {
 
 	votableWords.value = chooseWords(newWords, WORDS_TO_CHOOSE)
 	seenWords.value = votableWords.value.map((word) => word.id)
+
+	return newWords
+}
+
+async function addWordsIfNeeded(newWords: readonly SubmittedWord[]) {
+	if (votableWords.value.length < WORDS_TO_CHOOSE) {
+		const numberOfNeededWords = WORDS_TO_CHOOSE - votableWords.value.length
+		const moreVotableWords = chooseWords(newWords.filter(isVotableWord), numberOfNeededWords)
+		votableWords.value = [...votableWords.value, ...moreVotableWords]
+		seenWords.value = [...seenWords.value, ...moreVotableWords.map((word) => word.id)]
+	}
 
 	return newWords
 }
