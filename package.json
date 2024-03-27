@@ -19,7 +19,8 @@
 		"db:reset": "supabase db reset",
 		"backend:start": "supabase functions serve --env-file ./supabase/.env.local",
 		"test:admin": "vitest run -c ./admin/vite.config.ts",
-		"admin:add-prompts": "env-cmd -f ./admin/.env tsx ./admin/prompts/add-all/exec.ts"
+		"admin:add-prompts": "env-cmd -f ./admin/.env tsx ./admin/prompts/add-all/exec.ts",
+		"discovery:generate": "./admin/discovery/run.sh"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.42.1",
