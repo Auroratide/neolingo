@@ -56,7 +56,7 @@
 			{/if}
 		</main>
 		<footer>
-			<Stack size="0.75em">
+			<Stack size="1em">
 				{#if featureFlags.enabled}
 					<NavLinks values={[
 						{ href: "/", text: "Invent" },
@@ -65,7 +65,10 @@
 						{ href: "/legal", text: "Legal" },
 					]} />
 				{/if}
-				<p><small>© Auroratide (Timothy Foster), All Rights Reserved.</small></p>
+				<Stack size="0.25em">
+					<p><small>Made by <a href="https://auroratide.com">Auroratide</a>, mainly for fun <span class="inline-icon">♥</span> Source code on <a href="https://github.com/Auroratide/neolingo">Github</a></small></p>
+					<p><small>© Auroratide (Timothy Foster), All Rights Reserved.</small></p>
+				</Stack>
 			</Stack>
 		</footer>
 	</Stack>
@@ -86,5 +89,10 @@
 		padding-block: 2em;
 		font-size: 1.15em;
 		white-space: balance;
+	}
+
+	.inline-icon {
+		font-size: 0.75em;
+		padding-inline: 0.5em;
 	}
 </style>
