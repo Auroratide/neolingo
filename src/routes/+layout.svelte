@@ -6,6 +6,7 @@
 	import { page } from "$app/stores"
 	import FocusCard from "$lib/design-system/FocusCard.svelte"
 	import featureFlags from "$lib/feature-flags.svelte"
+	import NavLinks from "$lib/design-system/NavLinks.svelte"
 
 	type Props = { children: Snippet }
 	const { children }: Props = $props()
@@ -31,10 +32,10 @@
 			<h1>{title}</h1>
 			{#if featureFlags.enabled}
 				<nav>
-					<ul class="simple-link-list fancy-links min-spacing">
-						<li><a href="/">Invent</a></li>
-						<li><a href="/dictionary">Dictionary</a></li>
-					</ul>
+					<NavLinks values={[
+						{ href: "/", text: "Invent" },
+						{ href: "/dictionary", text: "Dictionary" },
+					]} />
 				</nav>
 			{/if}
 		</header>
@@ -55,12 +56,12 @@
 		<footer>
 			<Stack size="0.75em">
 				{#if featureFlags.enabled}
-					<ul class="simple-link-list fancy-links max-spacing">
-						<li><a href="/">Invent</a></li>
-						<li><a href="/dictionary">Dictionary</a></li>
-						<li><a href="/accessibility">Accessibility</a></li>
-						<li><a href="/legal">Legal</a></li>
-					</ul>
+					<NavLinks values={[
+						{ href: "/", text: "Invent" },
+						{ href: "/dictionary", text: "Dictionary" },
+						{ href: "/accessibility", text: "Accessibility" },
+						{ href: "/legal", text: "Legal" },
+					]} />
 				{/if}
 				<p><small>© Auroratide (Timothy Foster), All Rights Reserved.</small></p>
 			</Stack>
@@ -70,61 +71,12 @@
 <Notifier />
 
 <style>
-	header, main, footer { width: 100%; }
+	header, main, footer { inline-size: 100%; }
+
+	h1 { margin-block-end: 0.25em; }
 
 	header, footer {
 		text-align: center;
-	}
-
-	.simple-link-list {
-		list-style: none;
-		padding: 0 0.5em;
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-	}
-
-	.max-spacing {
-		justify-content: space-between;
-		gap: 1em;
-	}
-
-	.min-spacing {
-		justify-content: center;
-		gap: 1.5em;
-	}
-
-	.fancy-links a {
-		text-decoration: none;
-		display: inline-block;
-		position: relative;
-
-		&:hover { color: var(--color-u); }
-
-		&::before, &::after {
-			content: "";
-			position: absolute;
-			inset-inline: 0 0;
-			height: 0.05em;
-			background: currentColor;
-			transition: inset-inline 0.25s ease-in-out;
-		}
-
-		&::before { inset-block-end: 0.2em; }
-		&::after { inset-block-end: 0.15em; }
-
-		&:hover::before, &:focus::before {
-			inset-inline: 0 100%;
-		}
-
-		&:hover::after, &:focus::after {
-			inset-inline: 100% 0;
-		}
-
-		@media (prefers-reduced-motion: reduce) {
-			&::before, &::after { transition: none; }
-		}
 	}
 
 	.temp-announcement {
