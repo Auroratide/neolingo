@@ -4,7 +4,7 @@
 	import Share from "./Share.svelte"
 </script>
 
-<FocusCard id="whats-next-section">
+<FocusCard id="whats-next-section" transition>
 	<div class="small-stack">
 		<h2 class="text-center">What's next?</h2>
 		<p class="text-center balance more-space-after">Come back tomorrow to see which word won and then invent another new word!</p>
