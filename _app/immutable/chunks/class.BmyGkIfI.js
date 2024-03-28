@@ -1,1 +1,0 @@
-import{m as c,v as t}from"./disclose-version.D9v2Ydgv.js";function i(s,e){var l=s.__className,a=n(e);c&&s.className===a?s.__className=a:(l!==a||c&&s.className!==a)&&(e==null?s.removeAttribute("class"):t(s,a),s.__className=a)}function n(s){return s??""}function r(s,e,l){l?s.classList.add(e):s.classList.remove(e)}export{r as a,i as c};
