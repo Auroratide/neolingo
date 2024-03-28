@@ -54,6 +54,19 @@ a {
 	&:hover, &:focus { text-decoration: none; }
 }
 
+hr {
+	--color: var(--color-hr, var(--color-o));
+	margin-block: 0.25em;
+	block-size: 0.625em;
+	inline-size: 95%;
+	border: none;
+	opacity: 0.333;
+	background:
+		center 0 / 33% 0.125em linear-gradient(to bottom, var(--color), var(--color)) no-repeat,
+		center 0.25em / 100% 0.125em linear-gradient(to bottom, var(--color), var(--color)) no-repeat,
+		center 0.5em/ 33% 0.125em linear-gradient(to bottom, var(--color), var(--color)) no-repeat;
+}
+
 button, .button {
 	display: inline-flex;
 	align-items: center;
