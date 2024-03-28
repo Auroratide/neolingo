@@ -2,6 +2,7 @@
 	"name": "@auroratide/neolingo",
 	"version": "0.0.1",
 	"private": true,
+	"license": "GPL-3.0-only",
 	"scripts": {
 		"dev": "concurrently -n \"FUNCTIONS,SVELTE\" -c \"green,red\" \"pnpm backend:start\" \"vite dev\"",
 		"build": "vite build",
