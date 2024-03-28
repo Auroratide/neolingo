@@ -7,6 +7,7 @@
 	import FocusCard from "$lib/design-system/FocusCard.svelte"
 	import featureFlags from "$lib/feature-flags.svelte"
 	import NavLinks from "$lib/design-system/NavLinks.svelte"
+	import SkipLink from "$lib/design-system/SkipLink.svelte"
 
 	type Props = { children: Snippet }
 	const { children }: Props = $props()
@@ -30,6 +31,7 @@
 	<Stack>
 		<header>
 			<h1>{title}</h1>
+			<SkipLink href="#main">Skip to content</SkipLink>
 			{#if featureFlags.enabled}
 				<nav>
 					<NavLinks values={[
@@ -39,7 +41,7 @@
 				</nav>
 			{/if}
 		</header>
-		<main>
+		<main id="main">
 			{#if featureFlags.enabled || isBetaPath}
 				{@render children()}
 			{:else}
