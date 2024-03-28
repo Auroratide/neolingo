@@ -14,7 +14,8 @@
 	}; let {
 		id,
 		words,
-		value = $bindable(),
+		// value = $bindable(), // will be needed in next.82+
+		value,
 		specificWord,
 		myWord,
 		onreplaceword,

@@ -9,7 +9,8 @@
 	}; let {
 		id,
 		label,
-		value = $bindable(""),
+		// value = $bindable(""), // will be needed in next.82+
+		value = "",
 		disabled = false,
 	}: Props = $props()
 
