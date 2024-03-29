@@ -49,6 +49,7 @@
 	}}
 >
 	{#snippet form(content)}
+		{@const canReplaceWords = votes.votableWords.length < (content?.length ?? 0) - 1} <!-- minus 1 for your own word -->
 		<p>Choose a favorite word that isn't your own:</p>
 		<WordVoter
 			id="word-vote"
@@ -56,6 +57,7 @@
 			bind:value={currentVote}
 			specificWord={votes.specificWord}
 			myWord={prompt.myWord}
+			canReplace={canReplaceWords}
 			{onreplaceword}
 			onsearchword={votes.findSpecificWord}
 		/>

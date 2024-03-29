@@ -9,6 +9,7 @@
 		value: SubmittedWordId | undefined,
 		myWord: string,
 		specificWord: SubmittedWord | undefined,
+		canReplace?: boolean,
 		onreplaceword: (index: number) => void,
 		onsearchword: (search: string) => Promise<SubmittedWord | undefined>,
 	}; let {
@@ -18,6 +19,7 @@
 		value,
 		specificWord,
 		myWord,
+		canReplace = true,
 		onreplaceword,
 		onsearchword,
 	}: Props = $props()
@@ -69,7 +71,7 @@
 	<legend>Which word do you like best?</legend>
 	<div class="gridded-radios larger">
 		{#each words as word, i (word.id)}
-			{@render wordoption(word, i, true)}
+			{@render wordoption(word, i, canReplace)}
 		{/each}
 		<label for="{id}-word-search" class="span-all smaller space-before" style:--row="{words.length}">Or, find a specific word</label>
 		<div class="span-all row smaller" style:--row="{words.length + 1}">
