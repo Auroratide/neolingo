@@ -57,7 +57,8 @@ function clearDb(pg: Client) {
 			private.words,
 			private.submissions,
 			private.prompts,
-			private.people
+			private.people,
+			private.feedback
 		RESTART IDENTITY;
 	`)
 }

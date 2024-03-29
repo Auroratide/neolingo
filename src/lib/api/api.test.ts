@@ -24,7 +24,6 @@ describe("api", withDb((db) => {
 		})
 	})
 
-
 	test("getPromptForToday", async () => {
 		// given
 		const now = new Date()
@@ -448,6 +447,45 @@ describe("api", withDb((db) => {
 				definition: "old prompt",
 				day: new Date("2024-02-24T00:00:00.000Z"),
 			})
+		})
+	})
+
+	describe("submitFeedback", () => {
+		test("success", async () => {
+			// when
+			await Api.submitFeedback(PASSING_TOKEN, {
+				topic: "test",
+				text: "I love the site!",
+			})
+
+			// then
+			const result = await db.query("SELECT * FROM private.feedback")
+				.then((res) => res.rows[0])
+
+			expect(result.topic).toEqual("test")
+			expect(result.text).toEqual("I love the site!")
+		})
+
+		test("failing token", async () => {
+			// when
+			const promise = Api.submitFeedback(FAILING_TOKEN, {
+				topic: "test",
+				text: "I love the site!",
+			})
+
+			// then
+			await expect(promise).rejects.toThrow(/do you need to verify a captcha/i)
+		})
+
+		test("text is too long", async () => {
+			// when
+			const promise = Api.submitFeedback(PASSING_TOKEN, {
+				topic: "test",
+				text: "a".repeat(3001),
+			})
+
+			// then
+			await expect(promise).rejects.toThrow(/text is too long/i)
 		})
 	})
 }))

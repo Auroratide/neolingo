@@ -79,3 +79,28 @@ export async function getLastWord(): Promise<OfficialWord> {
 			return rowToOfficialWord(data)
 		})
 }
+
+export async function submitFeedback(token: string, feedback: {
+	topic: string,
+	text: string,
+}): Promise<void> {
+	return await supabase.functions.invoke("submit-feedback", {
+		body: {
+			token,
+			payload: feedback,
+		},
+	}).then(async ({ error }) => {
+		if (error != null) {
+			if (error.context.status === 403) {
+				raiseError(error, "I could not submit your feedback. Do you need to verify a captcha?")
+			}
+
+			if (error.context.status === 400) {
+				const body = await error.context.json()
+				raiseError(error, `I could not submit your feedback. ${body.message}`)
+			}
+
+			raiseError(error, "I could not submit your feedback, and I don't know why.")
+		}
+	})
+}
