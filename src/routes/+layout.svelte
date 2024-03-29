@@ -63,6 +63,7 @@
 						{ href: "/dictionary", text: "Dictionary" },
 						{ href: "/accessibility", text: "Accessibility" },
 						{ href: "/legal", text: "Legal" },
+						{ href: "/feedback", text: "Feedback" },
 					]} />
 				{/if}
 				<Stack size="0.25em">
