@@ -25,7 +25,7 @@
 		<section>
 			<h2>Feedback</h2>
 			<p>I am very open to discourse about improving the accessibility of anything I do! If anything hinders you from reading my articles or using my things, please let me know.</p>
-			<p><strong><a href="https://github.com/Auroratide/neolingo/issues/new?labels=accessibility">Create an issue on Github</a></strong>, and I will definitely look into it!</p>
+			<p><strong><a href="/feedback?topic=accessibility">Leave me a note</a></strong>, and I will definitely look into it!</p>
 		</section>
 	</Stack>
 </Typography>

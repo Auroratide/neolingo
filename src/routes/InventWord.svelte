@@ -57,6 +57,7 @@
 	waiting-label="Creating a prompt"
 	submitted-label="Sending your word"
 	{onsubmit}
+	transition
 	transitionTo={{
 		id: "vote-section",
 		shouldTransition: () => (prompt.myWord?.length ?? 0) === 0,

@@ -43,6 +43,7 @@
 	waiting-label="Finding words"
 	submitted-label="Sending your vote"
 	{onsubmit}
+	transition
 	transitionTo={{
 		id: "whats-next-section",
 		shouldTransition: () => (votes.myVote?.length ?? 0) === 0,
