@@ -104,7 +104,7 @@
 {#snippet wordoption(word: SubmittedWord, i: number, allowReplace: boolean)}
 	<!-- grid areas help the transition to overlap correctly -->
 	<div style:grid-area="{i + 1} / 1 / {i + 2} / 2"><!-- spacing --></div>
-	<button class="x-button" type="button" onclick={() => onreplaceword(i)} title="Replace {word.text}" style:grid-area="{i + 1} / 2 / {i + 2} / 3" style:visibility="{allowReplace ? "visible" : "hidden"}">
+	<button class="x-button" type="button" onclick={() => onreplaceword(i)} title="Replace {word.text}" style:grid-area="{i + 1} / 2 / {i + 2} / 3" disabled={!allowReplace}>
 		<span class="{VisuallyHidden}">Replace {word.text}</span>
 		<span aria-hidden="true">&times;</span>
 	</button>
@@ -268,6 +268,11 @@
 		}
 
 		&::before, &::after { all: unset; }
+
+		&:disabled {
+			opacity: 0;
+			cursor: auto;
+		}
 	}
 
 	.subtle-button {
