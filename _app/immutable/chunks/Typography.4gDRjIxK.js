@@ -1,0 +1,1 @@
+import{a as e,l as t,e as o,t as i}from"./disclose-version.BhNNnOgD.js";import{p as l,a as m}from"./runtime.D6qGRyYZ.js";import{s as v}from"./Stack.fmF2Lfio.js";var d=i('<div class="typography svelte-k7q64f"><!></div>');function h(a,p){m(p,!0);var r=o(a,!0,d),s=t(r);v(()=>p.children,s),e(a,r),l()}export{h as T};
