@@ -168,6 +168,11 @@ input[type="text"], input[type="search"], textarea, select {
 }
 
 select { cursor: pointer; }
+option {
+	background: var(--color-a);
+	color: var(--color-u);
+	border-radius: 0;
+}
 
 textarea {
 	resize: vertical;
