@@ -6,7 +6,7 @@ import me from "$lib/me/me.svelte"
 import { chooseWords } from "./choose-words"
 import { storedState } from "$lib/stored-state"
 
-export const WORDS_TO_CHOOSE = 3
+export const WORDS_TO_CHOOSE = 5
 
 export type VotesRune = {
 	readonly allWords: Promise<readonly SubmittedWord[]>
